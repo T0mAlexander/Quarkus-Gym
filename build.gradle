@@ -1,0 +1,144 @@
+import java.text.SimpleDateFormat
+
+plugins {
+  id 'java'
+  id 'io.quarkus' version '3.17.5'
+  id 'org.liquibase.gradle' version '2.2.0'
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+group = 'org.quarkus'
+version = '1.0.0'
+
+ext {
+  quarkusPlatformGroupId = project.findProperty('quarkusPlatformGroupId')
+  quarkusPlatformArtifactId = project.findProperty('quarkusPlatformArtifactId')
+  quarkusPlatformVersion = project.findProperty('quarkusPlatformVersion')
+}
+
+dependencies {
+  implementation 'io.quarkus:quarkus-smallrye-jwt-build:3.17.5'
+  implementation 'io.quarkus:quarkus-smallrye-jwt:3.17.5'
+  implementation 'at.favre.lib:bcrypt:0.10.2'
+  implementation 'io.quarkus:quarkus-hibernate-orm-panache:3.17.5'
+  implementation 'io.quarkus:quarkus-hibernate-validator:3.17.5'
+  implementation 'io.quarkus:quarkus-liquibase:3.17.5'
+  liquibaseRuntime 'info.picocli:picocli:4.7.6'
+  liquibaseRuntime 'io.quarkus:quarkus-jdbc-postgresql:3.17.5'
+  liquibaseRuntime 'org.liquibase:liquibase-core:4.30.0'
+  implementation 'io.quarkus:quarkus-jdbc-postgresql:3.17.5'
+  implementation 'io.quarkus:quarkus-redis-client:3.17.5'
+  implementation 'io.quarkus:quarkus-redis-cache:3.17.5'
+  implementation 'io.quarkus:quarkus-swagger-ui:3.17.5'
+  implementation 'io.quarkus:quarkus-smallrye-openapi:3.17.5'
+  implementation 'io.quarkus:quarkus-rest:3.17.5'
+  implementation 'io.quarkus:quarkus-rest-jackson:3.17.5'
+  implementation 'io.quarkus:quarkus-rest-client-jackson:3.17.5'
+  implementation 'io.quarkus:quarkus-arc:3.17.5'
+  implementation 'org.slf4j:slf4j-api:2.0.16'
+  testImplementation 'io.quarkus:quarkus-junit5:3.17.5'
+  implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.register('generateMigration') {
+  group = 'Database'
+  description = 'Gerador de migrações SQL'
+
+  doLast {
+    def timestamp = new SimpleDateFormat('yyyyMMddHHmmss').format(new Date())
+    def author = System.getenv('USER') ?: 'Desenvolvedor'
+    def name = project.findProperty('migration.name')
+
+    if (!name) {
+      throw new IllegalArgumentException('Necessário nomear o script SQL')
+    }
+    def description = project.findProperty('migration.description')
+    if (!description) {
+      throw new IllegalArgumentException('Necessário descrever a migração SQL')
+    }
+    def fileName = "v${timestamp}_${name}.sql"
+
+    def file = project.file("./src/main/resources/db/changelog/$fileName")
+    def liquibaseStamp = """
+    --Liquibase formatted SQL
+    --changeset $author:v$timestamp
+    --description: $description
+    """.stripIndent().trim()
+
+    def updateHistory = project.file("./src/main/resources/db/changelog/index.sql")
+    def liquibaseUpdate = """
+    --changeset $author:v$timestamp
+    --description: $description
+    --include file=./$fileName
+    """.stripIndent().trim()
+
+    file.write("$liquibaseStamp\n\n")
+    updateHistory.write("$liquibaseUpdate\n\n")
+    println("Arquivo de migração gerado em: /src/main/resources/db/changelog/$fileName")
+    println("Histórico de migrações do Liquibase atualizado!")
+  }
+}
+
+liquibase {
+  def liquibaseProps = new Properties()
+  file("./src/main/resources/liquibase.properties").withInputStream {
+    liquibaseProps.load(it)
+  }
+
+  activities {
+    //noinspection GroovyAssignabilityCheck
+    main {
+      changelogFile './src/main/resources/db/changelog/liquibase.xml'
+      url liquibaseProps.getProperty('liquibase.command.url')
+      username liquibaseProps.getProperty('liquibase.command.user')
+      password liquibaseProps.getProperty('liquibase.command.password')
+      logLevel liquibaseProps.getProperty('liquibase.logLevel')
+    }
+  }
+}
+
+tasks.register('liquibaseMigrate') {
+  group = 'Database'
+  description = 'Realiza a migração do banco com Liquibase'
+
+  dependsOn('update')
+}
+
+tasks.register('liquibaseRollback') {
+  group = 'Database'
+  description = 'Desfaz apenas a última migração feita com Liquibase'
+
+  dependsOn('rollback-count')
+}
+
+tasks.register('liquibaseStatus') {
+  group = 'Database'
+  description = 'Checa status das migrações concluídas com Liquibase'
+
+  dependsOn('status')
+}
+
+tasks.register('liquibaseHistory') {
+  group = 'Database'
+  description = 'Consulta o histórico de migrações do Liquibase'
+
+  dependsOn('history')
+}
+
+tasks.withType(Test).configureEach {
+  systemProperty 'java.util.logging.manager', 'org.jboss.logmanager.LogManager'
+}
+
+tasks.withType(JavaCompile).configureEach {
+  options.encoding = 'UTF-8'
+  options.compilerArgs << '-parameters'
+}

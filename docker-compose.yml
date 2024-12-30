@@ -1,0 +1,10 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgis/postgis:17-3.5-alpine
+    environment:
+        POSTGRES_USER: java
+        POSTGRES_PASSWORD: 123
+        POSTGRES_DB: java
+    ports:
+        - 5432:5432
