@@ -3,7 +3,7 @@
 ## Requisitos Funcionais
 
 - [x] Cadastros
-- [ ] Autenticação
+- [x] Autenticação
 - [ ] Realização de um check-in pelo usuário
 - [ ] Consultar o perfil de um usuário logado
 - [ ] Consultar o histórico de check-ins
