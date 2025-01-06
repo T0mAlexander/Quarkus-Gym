@@ -1,0 +1,162 @@
+import java.text.SimpleDateFormat
+
+plugins {
+  id 'java'
+  id 'io.quarkus'
+  id 'org.liquibase.gradle' version '2.2.0'
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+group 'org.quarkus'
+version '1.0.0'
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+}
+
+dependencies {
+  // REST
+  implementation 'io.quarkus:quarkus-rest-client-jackson:3.17.5'
+  implementation 'io.quarkus:quarkus-rest-jackson:3.17.5'
+  implementation 'io.quarkus:quarkus-rest-client:3.17.5'
+  implementation 'io.quarkus:quarkus-rest:3.17.5'
+  implementation 'io.quarkus:quarkus-smallrye-openapi:3.17.5'
+  implementation 'io.quarkus:quarkus-swagger-ui:3.17.5'
+  implementation 'io.quarkus:quarkus-mutiny:3.17.5'
+
+  // Logs
+  implementation 'org.slf4j:slf4j-api:2.0.16'
+
+  // CDI
+  implementation 'io.quarkus:quarkus-arc:3.17.5'
+
+  // Hibernate & JDBC
+  implementation 'io.quarkus:quarkus-hibernate-reactive:3.17.5'
+  implementation 'io.quarkus:quarkus-hibernate-reactive-panache:3.17.5'
+  implementation 'io.quarkus:quarkus-hibernate-reactive-rest-data-panache:3.17.5'
+  implementation 'io.quarkus:quarkus-hibernate-validator:3.17.5'
+  implementation 'io.quarkus:quarkus-reactive-pg-client:3.17.5'
+  implementation 'io.quarkus:quarkus-jdbc-postgresql:3.17.5'
+
+  // Liquibase
+  liquibaseRuntime 'io.quarkus:quarkus-liquibase:3.17.5'
+  liquibaseRuntime 'io.quarkus:quarkus-picocli:3.17.5'
+  liquibaseRuntime 'io.quarkus:quarkus-jdbc-postgresql:3.17.5'
+
+  // Observabilidade
+  implementation 'io.quarkus:quarkus-opentelemetry:3.17.5'
+  implementation 'io.quarkus:quarkus-micrometer-registry-prometheus:3.17.5'
+
+  // Cache
+  implementation 'io.quarkus:quarkus-redis-client:3.17.5'
+  implementation 'io.quarkus:quarkus-redis-cache:3.17.5'
+
+  // Segurança
+  implementation 'io.quarkus:quarkus-smallrye-jwt:3.17.5'
+  implementation 'io.quarkus:quarkus-smallrye-jwt-build:3.17.5'
+  implementation 'io.quarkus:quarkus-elytron-security-jdbc:3.17.5'
+  implementation 'at.favre.lib:bcrypt:0.10.2'
+
+  // Testes
+  implementation 'io.quarkus:quarkus-jacoco:3.17.5'
+  testImplementation 'io.quarkus:quarkus-junit5:3.17.5'
+  testImplementation 'io.rest-assured:rest-assured:3.17.5'
+  implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+}
+
+tasks.register('generateMigration') {
+  group = 'Database'
+  description = 'Gerador de migrações SQL'
+
+  doLast {
+    def timestamp = new SimpleDateFormat('yyyyMMddHHmmss').format(new Date())
+    def author = System.getenv('USER') ?: { throw new IllegalArgumentException("Necessário definir autor da migração!") }
+    def name = project.findProperty('migration.name')
+
+    if (!name) {
+      throw new IllegalArgumentException('Necessário nomear o script SQL')
+    }
+
+    def description = project.findProperty('migration.description')
+    if (!description) {
+      throw new IllegalArgumentException('Necessário descrever a migração SQL')
+    }
+
+    def fileName = "v${timestamp}_${name}.sql"
+    def migrationFolder = "./src/main/resources/db/migrations"
+
+    def file = project.file("$migrationFolder/$fileName")
+    def liquibaseStamp = """
+    --Liquibase formatted SQL
+    --changeset $author:v$timestamp
+    --description: $description
+    """.stripIndent().trim()
+
+    file.write("$liquibaseStamp\n\n")
+    println("Arquivo de migração gerado em: $migrationFolder/$fileName")
+  }
+}
+
+liquibase {
+  def liquibaseProps = new Properties()
+  file("./src/main/resources/liquibase.properties").withInputStream {
+    liquibaseProps.load(it)
+  }
+
+  activities {
+    //noinspection GroovyAssignabilityCheck
+    main {
+      changelogFile './src/main/resources/db/changelog/liquibase.xml'
+      url liquibaseProps.getProperty('liquibase.command.url')
+      username liquibaseProps.getProperty('liquibase.command.user')
+      password liquibaseProps.getProperty('liquibase.command.password')
+      logLevel liquibaseProps.getProperty('liquibase.logLevel')
+    }
+  }
+}
+
+tasks.register('liquibaseMigrate') {
+  group = 'Database'
+  description = 'Realiza a migração do banco com Liquibase'
+
+  dependsOn('update')
+}
+
+tasks.register('liquibaseRollback') {
+  group = 'Database'
+  description = 'Desfaz apenas a última migração feita com Liquibase'
+
+  dependsOn('rollback-count')
+}
+
+tasks.register('liquibaseStatus') {
+  group = 'Database'
+  description = 'Checa status das migrações concluídas com Liquibase'
+
+  dependsOn('status')
+}
+
+tasks.register('liquibaseHistory') {
+  group = 'Database'
+  description = 'Consulta o histórico de migrações do Liquibase'
+
+  dependsOn('history')
+}
+
+test {
+  systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+compileJava {
+  options.encoding = 'UTF-8'
+  options.compilerArgs << '-parameters'
+}
+
+compileTestJava {
+  options.encoding = 'UTF-8'
+}

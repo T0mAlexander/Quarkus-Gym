@@ -1,0 +1,16 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgis/postgis:17-3.5-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: java
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: quarkus
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
