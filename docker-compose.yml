@@ -8,9 +8,11 @@ services:
       POSTGRES_USER: java
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: quarkus
+    restart: always
 
   redis:
     container_name: redis
     image: redis:7-alpine
     ports:
       - 6379:6379
+    restart: always
