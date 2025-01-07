@@ -6,15 +6,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.quarkus.models.Gym;
 import org.quarkus.services.errors.GymExistsException;
-import org.quarkus.transactions.gym.GymCreationTransaction;
+import org.quarkus.transactions.GymTransactions;
 
 @SuppressWarnings("unused")
 @ApplicationScoped
 public class GymCreationService {
-  private final GymCreationTransaction database;
+  private final GymTransactions database;
 
   @Inject
-  public GymCreationService(GymCreationTransaction database) {
+  public GymCreationService(GymTransactions database) {
     this.database = database;
   }
 

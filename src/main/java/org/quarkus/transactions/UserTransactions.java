@@ -1,4 +1,4 @@
-package org.quarkus.transactions.user;
+package org.quarkus.transactions;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
@@ -7,7 +7,7 @@ import org.quarkus.models.User;
 import org.quarkus.repositories.UserRepository;
 
 @ApplicationScoped
-public class UserRegisterTransaction implements PanacheRepository<User>, UserRepository {
+public class UserTransactions implements PanacheRepository<User>, UserRepository {
   @Override
   public Uni<User> findByEmail(String email) {
     return find("email", email).firstResult();

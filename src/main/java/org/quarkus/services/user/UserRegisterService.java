@@ -5,16 +5,16 @@ import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.quarkus.transactions.user.UserRegisterTransaction;
+import org.quarkus.transactions.UserTransactions;
 import org.quarkus.models.User;
 import org.quarkus.services.errors.UserExistsException;
 
 @ApplicationScoped
 public class UserRegisterService {
-  private final UserRegisterTransaction database;
+  private final UserTransactions database;
 
   @Inject
-  public UserRegisterService(UserRegisterTransaction database) {
+  public UserRegisterService(UserTransactions database) {
     this.database = database;
   }
 

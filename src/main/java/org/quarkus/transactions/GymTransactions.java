@@ -1,4 +1,4 @@
-package org.quarkus.transactions.gym;
+package org.quarkus.transactions;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
@@ -8,7 +8,7 @@ import org.quarkus.repositories.GymRepository;
 import java.util.List;
 
 @ApplicationScoped
-public class GymCreationTransaction implements PanacheRepository<Gym>, GymRepository {
+public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
   @Override
   public Uni<Gym> findByEmail(String email) {
     return find("email", email).firstResult();

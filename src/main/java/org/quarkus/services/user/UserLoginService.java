@@ -5,16 +5,16 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.quarkus.services.errors.NewSessionException;
-import org.quarkus.transactions.user.UserLoginTransaction;
 import org.quarkus.models.User;
 import org.quarkus.services.errors.InvalidCredentialsException;
+import org.quarkus.transactions.UserTransactions;
 
 @ApplicationScoped
 public class UserLoginService {
-  private final UserLoginTransaction database;
+  private final UserTransactions database;
 
   @Inject
-  public UserLoginService(UserLoginTransaction database) {
+  public UserLoginService(UserTransactions database) {
     this.database = database;
   }
 
