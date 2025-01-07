@@ -1,4 +1,4 @@
-package org.quarkus.factories.gym;
+package org.quarkus.factories;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.quarkus.services.gym.GymCreationService;
@@ -6,8 +6,8 @@ import org.quarkus.transactions.GymTransactions;
 
 @ApplicationScoped
 @SuppressWarnings("unused")
-public class GymCreationFactory {
-  public GymCreationService service(GymTransactions transaction) {
-    return new GymCreationService(transaction);
+public class GymFactory {
+  public GymCreationService createService(GymTransactions createGym) {
+    return new GymCreationService(createGym);
   }
 }

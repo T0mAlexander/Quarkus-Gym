@@ -11,18 +11,18 @@ import org.quarkus.transactions.GymTransactions;
 @SuppressWarnings("unused")
 @ApplicationScoped
 public class GymCreationService {
-  private final GymTransactions database;
+  private final GymTransactions service;
 
   @Inject
-  public GymCreationService(GymTransactions database) {
-    this.database = database;
+  public GymCreationService(GymTransactions service) {
+    this.service = service;
   }
 
   @WithTransaction
   public Uni<Gym> create(String name, String email, String description, String phone, Double latitude, Double longitude) {
 
 
-    return database.findByEmail(email).onItem().ifNotNull()
+    return service.findByEmail(email).onItem().ifNotNull()
       .failWith(new GymExistsException("Esta academia já existe!"))
       .onItem().ifNull().switchTo(() -> {
         Gym newGym = new Gym();
@@ -34,7 +34,7 @@ public class GymCreationService {
         newGym.setLatitude(latitude);
         newGym.setLongitude(longitude);
 
-        return database.create(newGym);
+        return service.create(newGym);
       }
     );
   }

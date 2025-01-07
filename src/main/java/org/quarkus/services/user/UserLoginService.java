@@ -11,11 +11,11 @@ import org.quarkus.transactions.UserTransactions;
 
 @ApplicationScoped
 public class UserLoginService {
-  private final UserTransactions database;
+  private final UserTransactions service;
 
   @Inject
-  public UserLoginService(UserTransactions database) {
-    this.database = database;
+  public UserLoginService(UserTransactions service) {
+    this.service = service;
   }
 
   public Uni<User> auth(String email, String password, String token) {
@@ -25,7 +25,7 @@ public class UserLoginService {
       );
     }
 
-    return database.findByEmail(email)
+    return service.findByEmail(email)
       .onItem()
       .transform(user -> {
         if (user == null) {

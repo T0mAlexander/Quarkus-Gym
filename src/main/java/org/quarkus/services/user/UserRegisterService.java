@@ -11,18 +11,18 @@ import org.quarkus.services.errors.UserExistsException;
 
 @ApplicationScoped
 public class UserRegisterService {
-  private final UserTransactions database;
+  private final UserTransactions service;
 
   @Inject
-  public UserRegisterService(UserTransactions database) {
-    this.database = database;
+  public UserRegisterService(UserTransactions service) {
+    this.service = service;
   }
 
   @WithTransaction
   public Uni<User> create(String name, String email, String password) {
     String passwordHash = BCrypt.withDefaults().hashToString(6, password.toCharArray());
 
-    return database.findByEmail(email)
+    return service.findByEmail(email)
       .onItem().ifNotNull().failWith(
         new UserExistsException("Este usuário já está cadastrado!"))
       .onItem().ifNull()
@@ -31,7 +31,7 @@ public class UserRegisterService {
         newUser.setName(name);
         newUser.setEmail(email);
         newUser.setPassword(passwordHash);
-        return database.create(newUser);
+        return service.create(newUser);
       });
   }
 }
