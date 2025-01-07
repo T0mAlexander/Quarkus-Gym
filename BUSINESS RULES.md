@@ -1,9 +1,9 @@
 # API de Academia
 
-## Requisitos Funcionais
+## Requisitos funcionais
 
 - [x] Cadastros
-- [ ] Autenticação
+- [x] Autenticação
 - [ ] Realização de um check-in pelo usuário
 - [ ] Consultar o perfil de um usuário logado
 - [ ] Consultar o histórico de check-ins
@@ -13,7 +13,7 @@
 - [ ] Buscas de academias dentro do raio de 10km
 - [ ] Validação do check-in do usuário pelos administradores da academia
 
-## Regras de Negócios
+## Requisitos opcionais
 
 - [x] Impedir cadastro de endereços de email duplicados
 - [ ] Impedir 2 check-in no mesmo dia
@@ -24,8 +24,7 @@
 
 ## Requisitos Não-Funcionais
 
-- [x] Senhas devem ser criptografadas por segurança
 - [x] Persistência de dados com PostgreSQL
+- [x] Senhas devem ser criptografadas por segurança
 - [ ] Lista de dados com 20 itens por página
-
-- [ ] Identificação de usuários com JSON Web Token (JWT)
+- [x] Identificação de usuários com JSON Web Token (JWT)
