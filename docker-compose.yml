@@ -1,3 +1,5 @@
+#file: noinspection ComposeUnquotedPorts
+
 services:
   postgres:
     container_name: postgres
@@ -8,9 +10,14 @@ services:
       POSTGRES_USER: java
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: quarkus
+      TZ: America/Sao_Paulo
+    restart: always
 
   redis:
     container_name: redis
     image: redis:7-alpine
     ports:
       - 6379:6379
+    environment:
+      TZ: America/Sao_Paulo
+    restart: always
