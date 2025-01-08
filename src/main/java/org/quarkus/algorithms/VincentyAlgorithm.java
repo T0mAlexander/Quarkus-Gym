@@ -38,7 +38,7 @@ public class VincentyAlgorithm {
       sinSigma = Math.sqrt((cosReducedLatitudeTo * sinLambda) * (cosReducedLatitudeTo * sinLambda) + term * term);
 
       if (sinSigma == 0) {
-        return 0; // Co-incident points
+        return 0; // Pontos coincidentes
       }
 
       cosSigma = sinReducedLatitudeFrom * sinReducedLatitudeTo + cosReducedLatitudeFrom * cosReducedLatitudeTo * cosLambda;
@@ -48,7 +48,7 @@ public class VincentyAlgorithm {
       cos2SigmaM = cosSigma - 2 * sinReducedLatitudeFrom * sinReducedLatitudeTo / cosSquaredAlpha;
 
       if (Double.isNaN(cos2SigmaM)) {
-        cos2SigmaM = 0; // Equatorial line: cosSquaredAlpha=0
+        cos2SigmaM = 0; // Linha do Equador: cosSquaredAlpha=0
       }
 
       double C = flattening / 16 * cosSquaredAlpha * (4 + flattening * (4 - 3 * cosSquaredAlpha));
@@ -76,9 +76,7 @@ public class VincentyAlgorithm {
       )
     );
 
-    double distance = semiMinorAxis * A * (sigma - deltaSigma);
-
-    return distance / 1000; // Convert to kilometers
+    return semiMinorAxis * A * (sigma - deltaSigma); // Unidade no SI: metros (m)
   }
 
   private static double toRadian(double degree) {

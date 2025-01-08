@@ -1,7 +1,8 @@
 package org.quarkus.routes.gym;
 
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED;
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT;
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.BAD_REQUEST;
 
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.errors.GymExistsException;
+import org.quarkus.services.errors.InvalidCoordsException;
 import org.quarkus.services.gym.GymCreationService;
 import org.quarkus.validations.gym.GymCreationValidation;
 import org.slf4j.Logger;
@@ -39,7 +41,7 @@ public class GymCreationRoute {
       request.getDescription(),
       request.getPhone(),
       request.getLatitude(),
-      request.getLongitude()
+        request.getLongitude()
       ).onItem()
       .transform(newGym -> {
         log.info("Academia \"{}\" registrou-se na aplicação!", newGym.getName());
@@ -50,6 +52,10 @@ public class GymCreationRoute {
       .recoverWithItem(error -> Response.status(CONFLICT)
         .entity(error.getMessage())
         .build()
-    );
+    ).onFailure(InvalidCoordsException.class)
+      .recoverWithItem(error -> Response.status(BAD_REQUEST)
+        .entity(error.getMessage())
+        .build()
+      );
   }
 }

@@ -15,8 +15,9 @@ public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
   }
 
   @Override
-  public Uni<Gym> searchGyms(String query, int page) {
-    return null;
+  public Uni<List<Gym>> searchGyms(String query, int pageNumber) {
+    return find("name LIKE ?1", "%" + query + "%")
+      .page(pageNumber, 20).list();
   }
 
   @Override
