@@ -9,7 +9,7 @@
 - [ ] Consultar o histórico de check-ins
 - [ ] Criação de academias
 - [ ] Consultar o n° de check-ins feitos pelo usuário logado
-- [ ] Buscas de academias pelo nome
+- [x] Buscas de academias pelo nome
 - [ ] Buscas de academias dentro do raio de 10km
 - [ ] Validação do check-in do usuário pelos administradores da academia
 
@@ -26,5 +26,5 @@
 
 - [x] Persistência de dados com PostgreSQL
 - [x] Senhas devem ser criptografadas por segurança
-- [ ] Lista de dados com 20 itens por página
+- [x] Lista de dados com 10 itens por página
 - [x] Identificação de usuários com JSON Web Token (JWT)
