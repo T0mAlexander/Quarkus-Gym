@@ -1,4 +1,4 @@
-package org.quarkus.objects;
+package org.quarkus.models;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.common.constraint.NotNull;

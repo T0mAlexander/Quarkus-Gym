@@ -4,7 +4,7 @@ import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.quarkus.objects.Gym;
+import org.quarkus.models.Gym;
 import org.quarkus.services.errors.InvalidGymSearchException;
 import org.quarkus.transactions.GymTransactions;
 

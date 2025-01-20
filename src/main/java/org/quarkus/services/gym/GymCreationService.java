@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.quarkus.objects.Gym;
+import org.quarkus.models.Gym;
 import org.quarkus.services.errors.GymExistsException;
 import org.quarkus.services.errors.InvalidCoordsException;
 import org.quarkus.transactions.GymTransactions;

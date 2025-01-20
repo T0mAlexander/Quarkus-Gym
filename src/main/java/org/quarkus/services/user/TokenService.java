@@ -3,7 +3,7 @@ package org.quarkus.services.user;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.quarkus.objects.User;
+import org.quarkus.models.User;
 import java.time.Duration;
 
 /**

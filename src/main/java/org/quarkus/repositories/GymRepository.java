@@ -1,7 +1,7 @@
 package org.quarkus.repositories;
 
 import io.smallrye.mutiny.Uni;
-import org.quarkus.objects.Gym;
+import org.quarkus.models.Gym;
 import java.util.List;
 
 public interface GymRepository {
