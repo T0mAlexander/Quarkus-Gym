@@ -4,7 +4,10 @@ import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.quarkus.models.Gym;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.quarkus.objects.Gym;
 import org.quarkus.services.errors.GymExistsException;
 import org.quarkus.services.errors.InvalidCoordsException;
 import org.quarkus.transactions.GymTransactions;
@@ -32,13 +35,15 @@ public class GymCreationService {
       .failWith(new GymExistsException("Esta academia já existe!"))
       .onItem().ifNull().switchTo(() -> {
         Gym newGym = new Gym();
+        GeometryFactory postgis = new GeometryFactory();
+
+        Point location = postgis.createPoint(new Coordinate(longitude, latitude));
 
         newGym.setName(name);
         newGym.setEmail(email);
         newGym.setDescription(description);
         newGym.setPhone(phone);
-        newGym.setLatitude(latitude);
-        newGym.setLongitude(longitude);
+        newGym.setLocation(location);
 
         return service.create(newGym);
       }

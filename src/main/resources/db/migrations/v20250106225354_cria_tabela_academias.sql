@@ -3,21 +3,11 @@
 --description: Criação da tabela de academias
 
 CREATE TABLE gyms (
-  latitude FLOAT(53),
-  longitude FLOAT(53),
-  id bigint NOT NULL,
-  description VARCHAR(255),
-  email VARCHAR(255) NOT NULL,
+  id UUID NOT NULL,
   name VARCHAR(255),
+  email VARCHAR(255) NOT NULL,
   phone VARCHAR(255) NOT NULL,
+  location GEOMETRY(POINT, 4326),
+  description VARCHAR(255),
   PRIMARY KEY (id)
 );
-
-CREATE SEQUENCE gyms_seq
-  START WITH 1
-  INCREMENT BY 1
-  NO MINVALUE
-  NO MAXVALUE
-  CACHE 1;
-
-ALTER TABLE gyms ALTER COLUMN id SET DEFAULT nextval('gyms_seq');

@@ -3,7 +3,7 @@ package org.quarkus.transactions;
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.quarkus.models.User;
+import org.quarkus.objects.User;
 import org.quarkus.repositories.UserRepository;
 
 @ApplicationScoped

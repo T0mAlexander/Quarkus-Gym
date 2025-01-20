@@ -1,37 +1,47 @@
-package org.quarkus.models;
+package org.quarkus.objects;
 
-import io.quarkus.hibernate.reactive.panache.PanacheEntity;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.common.constraint.NotNull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import org.locationtech.jts.geom.Point;
+import org.quarkus.repositories.utils.PointConverter;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "gyms")
-public class Gym extends PanacheEntity {
+public class Gym extends PanacheEntityBase {
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+
   @Column
   @NotNull
   private String name;
 
   @Column
-  @NotEmpty
+  @NotNull
   private String email;
 
   @Column
   private String description;
 
   @Column
-  @NotEmpty
+  @NotNull
   private String phone;
 
-  @Column
+  @Column(columnDefinition = "geometry(POINT, 4326)")
   @NotNull
-  private Double latitude;
+  @Convert(converter = PointConverter.class)
+  private Point location;
 
-  @Column
-  @NotNull
-  private Double longitude;
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;
@@ -65,19 +75,11 @@ public class Gym extends PanacheEntity {
     this.phone = phone;
   }
 
-  public Double getLatitude() {
-    return latitude;
+  public Point getLocation() {
+    return location;
   }
 
-  public void setLatitude(Double latitude) {
-    this.latitude = latitude;
-  }
-
-  public Double getLongitude() {
-    return longitude;
-  }
-
-  public void setLongitude(Double longitude) {
-    this.longitude = longitude;
+  public void setLocation(Point location) {
+    this.location = location;
   }
 }

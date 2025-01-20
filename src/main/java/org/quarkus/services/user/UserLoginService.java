@@ -5,7 +5,7 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.quarkus.services.errors.NewSessionException;
-import org.quarkus.models.User;
+import org.quarkus.objects.User;
 import org.quarkus.services.errors.InvalidCredentialsException;
 import org.quarkus.transactions.UserTransactions;
 

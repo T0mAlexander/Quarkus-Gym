@@ -1,7 +1,7 @@
 package org.quarkus.repositories;
 
 import io.smallrye.mutiny.Uni;
-import org.quarkus.models.User;
+import org.quarkus.objects.User;
 
 public interface UserRepository {
   Uni<User> findByEmail(String email);

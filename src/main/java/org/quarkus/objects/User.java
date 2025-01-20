@@ -1,16 +1,19 @@
-package org.quarkus.models;
+package org.quarkus.objects;
 
-import io.quarkus.hibernate.reactive.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @SuppressWarnings("unused")
-public class User extends PanacheEntity {
+public class User extends PanacheEntityBase {
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+
   @Column
   @NotNull
   private String name;
@@ -24,6 +27,14 @@ public class User extends PanacheEntity {
   private String password;
 
   public User() {}
+
+  public UUID getId() {
+    return id;
+  }
+
+  public void setId(UUID id) {
+    this.id = id;
+  }
 
   public User(String name, String email, String password) {
     this.name = name;

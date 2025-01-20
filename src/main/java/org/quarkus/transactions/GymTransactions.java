@@ -4,7 +4,7 @@ import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.quarkus.models.Gym;
+import org.quarkus.objects.Gym;
 import org.quarkus.repositories.GymRepository;
 import java.util.List;
 

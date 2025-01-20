@@ -36,23 +36,23 @@ public class GymCreationRoute {
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> createGym(@Valid GymCreationValidation request) {
     return database.create(
-      request.getName(),
-      request.getEmail(),
-      request.getDescription(),
-      request.getPhone(),
-      request.getLatitude(),
+        request.getName(),
+        request.getEmail(),
+        request.getDescription(),
+        request.getPhone(),
+        request.getLatitude(),
         request.getLongitude()
       ).onItem()
       .transform(newGym -> {
-        log.info("Academia \"{}\" registrou-se na aplicação!", newGym.getName());
+          log.info("Academia \"{}\" registrou-se na aplicação!", newGym.getName());
 
-        return Response.status(CREATED).entity(request).build();
-      }
-    ).onFailure(GymExistsException.class)
+          return Response.status(CREATED).entity(request).build();
+        }
+      ).onFailure(GymExistsException.class)
       .recoverWithItem(error -> Response.status(CONFLICT)
         .entity(error.getMessage())
         .build()
-    ).onFailure(InvalidCoordsException.class)
+      ).onFailure(InvalidCoordsException.class)
       .recoverWithItem(error -> Response.status(BAD_REQUEST)
         .entity(error.getMessage())
         .build()

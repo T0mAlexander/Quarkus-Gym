@@ -17,10 +17,10 @@ public class GymCreationValidation {
   private String phone;
 
   @NotNull
-  private Double latitude;
+  private double latitude;
 
   @NotNull
-  private Double longitude;
+  private double longitude;
 
   public String getEmail() {
     return email;
@@ -38,19 +38,19 @@ public class GymCreationValidation {
     this.description = description;
   }
 
-  public Double getLongitude() {
+  public double getLongitude() {
     return longitude;
   }
 
-  public void setLongitude(Double longitude) {
+  public void setLongitude(double longitude) {
     this.longitude = longitude;
   }
 
-  public Double getLatitude() {
+  public double getLatitude() {
     return latitude;
   }
 
-  public void setLatitude(Double latitude) {
+  public void setLatitude(double latitude) {
     this.latitude = latitude;
   }
 
