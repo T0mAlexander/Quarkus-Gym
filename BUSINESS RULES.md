@@ -7,7 +7,7 @@
 - [ ] Realização de um check-in pelo usuário
 - [ ] Consultar o perfil de um usuário logado
 - [ ] Consultar o histórico de check-ins
-- [ ] Criação de academias
+- [x] Criação de academias
 - [ ] Consultar o n° de check-ins feitos pelo usuário logado
 - [x] Buscas de academias pelo nome
 - [ ] Buscas de academias dentro do raio de 10km
