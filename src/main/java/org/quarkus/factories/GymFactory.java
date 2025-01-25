@@ -2,6 +2,7 @@ package org.quarkus.factories;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.quarkus.services.gym.GymCreationService;
+import org.quarkus.services.gym.GymNearbyService;
 import org.quarkus.services.gym.GymSearchService;
 import org.quarkus.transactions.GymTransactions;
 
@@ -14,5 +15,9 @@ public class GymFactory {
 
   public GymSearchService searchService(GymTransactions searchGym) {
     return new GymSearchService(searchGym);
+  }
+
+  public GymNearbyService nearbyService(GymTransactions nearbyGym) {
+    return new GymNearbyService(nearbyGym);
   }
 }
