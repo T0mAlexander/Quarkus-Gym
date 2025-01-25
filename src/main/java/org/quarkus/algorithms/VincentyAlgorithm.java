@@ -1,15 +1,14 @@
 package org.quarkus.algorithms;
 
-// Referência matemática: https://en.wikipedia.org/wiki/Vincenty%27s_formulae
-
 /**
  * Algoritmo de cálculo de distâncias baseado na fórmula do matemático polaco-americano Thaddeus Vincenty publicada em 1975 que possui margem de precisão entre 10 centímetros até 0.5 milímetros
+ * <p>
+ * Referência: <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Fórmula de Vincenty - Wikipédia (Inglês)</a>
  */
 
-@SuppressWarnings("unused")
 public class VincentyAlgorithm {
-  public static double distanceBetweenCoordinates(Coordinates from, Coordinates to) {
-    final double semiMajorAxis = 6378137.0; // Raio equatorial da Terra (unidade: metros)
+  public static double distance(Coordinates from, Coordinates to) {
+    final double semiMajorAxis = 6378137.0; // Raio equatorial da Terra (em metros)
     final double flattening = 1 / 298.257223563; // Diferença entre o raio equatorial e polar dividido pelo equatorial
     final double semiMinorAxis = (1 - flattening) * semiMajorAxis;
 
@@ -63,7 +62,7 @@ public class VincentyAlgorithm {
     } while (Math.abs(lambda - previousLambda) > 1e-12 && --iterationLimit > 0);
 
     if (iterationLimit == 0) {
-      return Double.NaN; // Formula failed to converge
+      return Double.NaN; // Falha na conversão da fórmula
     }
 
     double uSquared = cosSquaredAlpha * (semiMajorAxis * semiMajorAxis - semiMinorAxis * semiMinorAxis) / (semiMinorAxis * semiMinorAxis);
@@ -81,5 +80,13 @@ public class VincentyAlgorithm {
 
   private static double toRadian(double degree) {
     return degree * (Math.PI / 180);
+  }
+
+  public static String formatDistance(double distance) {
+    if (distance < 1000) {
+      return String.format("%.0f m", distance);
+    } else {
+      return String.format("%.1f km", distance / 1000);
+    }
   }
 }
