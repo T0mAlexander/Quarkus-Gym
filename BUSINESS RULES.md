@@ -10,7 +10,7 @@
 - [x] Criação de academias
 - [ ] Consultar o n° de check-ins feitos pelo usuário logado
 - [x] Buscas de academias pelo nome
-- [ ] Buscas de academias dentro do raio de 10km
+- [x] Buscas de academias dentro do raio de 5km
 - [ ] Validação do check-in do usuário pelos administradores da academia
 
 ## Requisitos opcionais
