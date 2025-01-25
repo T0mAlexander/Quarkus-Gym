@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;
 import org.quarkus.repositories.utils.PointConverter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +35,9 @@ public class Gym extends PanacheEntityBase {
   @NotNull
   @Convert(converter = PointConverter.class)
   private Point location;
+
+  @OneToMany(mappedBy = "gym")
+  private List<CheckIn> checkIns;
 
   public UUID getId() {
     return id;

@@ -4,6 +4,8 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +27,9 @@ public class User extends PanacheEntityBase {
   @Column
   @NotNull
   private String password;
+
+  @OneToMany(mappedBy = "user")
+  private List<CheckIn> checkIns;
 
   public User() {}
 
