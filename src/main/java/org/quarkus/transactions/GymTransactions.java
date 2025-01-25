@@ -4,9 +4,12 @@ import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.quarkus.algorithms.Coordinates;
+import org.quarkus.algorithms.VincentyAlgorithm;
 import org.quarkus.models.Gym;
 import org.quarkus.repositories.GymRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
@@ -27,7 +30,18 @@ public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
 
   @Override
   public Uni<List<Gym>> findCloseGyms(Double latitude, Double longitude) {
-    return null;
+    double radiusInMetres = 5000; // 5 km
+
+    return listAll().onItem().transform(
+      gyms -> gyms.stream()
+      .filter(gym -> {
+        double distance = VincentyAlgorithm.distance(
+          new Coordinates(latitude, longitude),
+          new Coordinates(gym.getLocation())
+        );
+
+        return distance <= radiusInMetres;
+      }).collect(Collectors.toList()));
   }
 
   @Override
