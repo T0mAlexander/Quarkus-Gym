@@ -28,14 +28,8 @@ public class GymSearchRoute {
     return database.searchGyms(query, page)
       .onItem().transform(gyms -> {
         List<GymSearchValidation> response = gyms.stream()
-          .map(gym -> {
-            GymSearchValidation gymProps = new GymSearchValidation();
-
-            gymProps.setName(gym.getName());
-            gymProps.setPhone(gym.getPhone());
-
-            return gymProps;
-          }).collect(Collectors.toList());
+          .map(gym -> new GymSearchValidation(gym.getName(), gym.getPhone()))
+          .collect(Collectors.toList());
 
         return Response.status(OK).entity(response).build();
       })

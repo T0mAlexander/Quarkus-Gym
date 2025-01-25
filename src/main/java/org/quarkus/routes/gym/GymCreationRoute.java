@@ -36,12 +36,12 @@ public class GymCreationRoute {
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> createGym(@Valid GymCreationValidation request) {
     return database.create(
-        request.getName(),
-        request.getEmail(),
-        request.getDescription(),
-        request.getPhone(),
-        request.getLatitude(),
-        request.getLongitude()
+        request.name(),
+        request.email(),
+        request.description(),
+        request.phone(),
+        request.latitude(),
+        request.longitude()
       ).onItem()
       .transform(newGym -> {
           log.info("Academia \"{}\" registrou-se na aplicação!", newGym.getName());
@@ -56,6 +56,6 @@ public class GymCreationRoute {
       .recoverWithItem(error -> Response.status(BAD_REQUEST)
         .entity(error.getMessage())
         .build()
-      );
+    );
   }
 }

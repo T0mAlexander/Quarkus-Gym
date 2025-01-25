@@ -19,9 +19,7 @@ import org.quarkus.services.errors.NewSessionException;
 import org.quarkus.validations.user.UserLoginValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.time.Duration;
-
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.FORBIDDEN;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.UNAUTHORIZED;

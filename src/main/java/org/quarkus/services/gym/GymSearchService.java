@@ -24,7 +24,8 @@ public class GymSearchService {
     if (query == null || query.isEmpty()
         ||
         page == null || page < 1) {
-      return Uni.createFrom().failure(new InvalidGymSearchException("Busca inválida por academias!"));
+      return Uni.createFrom()
+        .failure(new InvalidGymSearchException("Busca inválida por academias!"));
     }
 
     return service.searchGyms(query, page);
