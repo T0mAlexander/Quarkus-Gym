@@ -3,25 +3,21 @@ package org.quarkus.validations.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@Schema(name = "Login de usuário")
 @SuppressWarnings("unused")
-public class UserLoginValidation {
+public record UserLoginValidation (
   @Email
-  @NotBlank
-  private String email;
+  @NotNull
+  @Schema(description = "E-mail do usuário cadastrado")
+  String email,
 
-  @NotBlank
+  @NotNull
   @Size(min = 6)
   @JsonProperty(access = Access.WRITE_ONLY)
-  private String password;
-
-  public String getPassword() {
-    return password;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-}
+  @Schema(description = "Senha do usuário cadastrado")
+  String password
+) {}

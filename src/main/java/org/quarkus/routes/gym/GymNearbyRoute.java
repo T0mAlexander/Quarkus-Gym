@@ -8,6 +8,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.algorithms.Coordinates;
 import org.quarkus.algorithms.VincentyAlgorithm;
@@ -22,6 +23,7 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
+@Tag(name = "Rota de busca de academias próximas")
 public class GymNearbyRoute {
   @Inject
   GymNearbyService service;

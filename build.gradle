@@ -46,6 +46,10 @@ dependencies {
   implementation 'net.postgis:postgis-jdbc:2024.1.0'
   implementation 'org.locationtech.jts:jts-core:1.20.0'
 
+  // Swagger UI
+  implementation 'io.quarkus:quarkus-smallrye-openapi:3.17.5'
+  implementation 'io.quarkus:quarkus-swagger-ui:3.17.5'
+
   // Liquibase
   liquibaseRuntime 'io.quarkus:quarkus-liquibase:3.17.5'
   liquibaseRuntime 'io.quarkus:quarkus-picocli:3.17.5'

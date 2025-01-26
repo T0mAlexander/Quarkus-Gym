@@ -13,6 +13,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.errors.GymExistsException;
 import org.quarkus.services.errors.InvalidCoordsException;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
+@Tag(name = "Rota de registro de academia")
 public class GymCreationRoute {
   private static final Logger log = LoggerFactory.getLogger(GymCreationRoute.class);
 

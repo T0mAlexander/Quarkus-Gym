@@ -11,6 +11,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.user.TokenService;
 import org.quarkus.services.user.UserLoginService;
@@ -40,8 +41,9 @@ public class UserLoginRoute {
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
+  @Tag(name = "Rota de login de usuários")
   public Uni<Response> loginUser(@Valid UserLoginValidation request, @CookieParam("token") String token) {
-    return login.auth(request.getEmail(), request.getPassword(), token)
+    return login.auth(request.email(), request.password(), token)
       .onItem().transformToUni(user ->
         JWT.generateToken(user).onItem()
           .transform(newToken -> {

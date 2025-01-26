@@ -14,9 +14,12 @@ import java.util.stream.Collectors;
 
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.*;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
+@Tag(name = "Rota de busca global de academias")
 public class GymSearchRoute {
   @Inject
   GymSearchService database;

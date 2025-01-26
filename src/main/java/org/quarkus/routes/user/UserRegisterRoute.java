@@ -12,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.user.UserRegisterService;
 import org.quarkus.services.errors.UserExistsException;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 @Path("/users")
 @RegisterRestClient
 @SuppressWarnings("unused")
+@Tag(name = "Rota de registro de novos usuários")
 public class UserRegisterRoute {
   private static final Logger log = LoggerFactory.getLogger(UserRegisterRoute.class);
 
@@ -39,23 +41,24 @@ public class UserRegisterRoute {
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> createUser(@Valid UserRegisterValidation request) {
     return database.create(
-      request.getName(),
-      request.getEmail(),
-      request.getPassword()
-    ).onItem()
+        request.name(),
+        request.email(),
+        request.password()
+      ).onItem()
       .transform(newUser -> {
-      log.info("Usuário \"{}\" registrou-se na aplicação!", newUser.getName());
+        log.info("Usuário \"{}\" registrou-se na aplicação!", newUser.getName());
 
-      UserRegisterValidation response = new UserRegisterValidation();
+        UserRegisterValidation response = new UserRegisterValidation(
+          newUser.getName(),
+          newUser.getEmail(),
+          newUser.getPassword()
+        );
 
-      response.setName(newUser.getName());
-      response.setEmail(newUser.getEmail());
-
-      return Response.status(CREATED).entity(response).build();
-    }).onFailure(UserExistsException.class)
+        return Response.status(CREATED).entity(response).build();
+      }).onFailure(UserExistsException.class)
       .recoverWithItem(
         error -> Response.status(CONFLICT)
-        .entity(error.getMessage())
-        .build());
+          .entity(error.getMessage())
+          .build());
   }
 }
