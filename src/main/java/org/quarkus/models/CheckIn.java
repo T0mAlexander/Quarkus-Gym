@@ -13,21 +13,27 @@ public class CheckIn extends PanacheEntityBase {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column
+  @Column(name = "user_id")
+  private UUID userId;
+
+  @Column(name = "gym_id")
+  private UUID gymId;
+
+  @Column(name = "creation_date")
   @NotNull
   private LocalDateTime creationDate;
 
-  @Column
+  @Column(name = "validation_date")
   private LocalDateTime validationDate;
 
   @ManyToOne
   @NotNull
-  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_check_ins_user_id"))
+  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_check_ins_user_id"), insertable = false, updatable = false)
   private User user;
 
   @ManyToOne
   @NotNull
-  @JoinColumn(name = "gym_id", foreignKey = @ForeignKey(name = "fk_check_ins_gym_id"))
+  @JoinColumn(name = "gym_id", foreignKey = @ForeignKey(name = "fk_check_ins_gym_id"), insertable = false, updatable = false)
   private Gym gym;
 
   public CheckIn() {}
@@ -38,6 +44,22 @@ public class CheckIn extends PanacheEntityBase {
 
   public void setId(UUID id) {
     this.id = id;
+  }
+
+  public UUID getUserId() {
+    return userId;
+  }
+
+  public void setUserId(UUID userId) {
+    this.userId = userId;
+  }
+
+  public UUID getGymId() {
+    return gymId;
+  }
+
+  public void setGymId(UUID gymId) {
+    this.gymId = gymId;
   }
 
   public LocalDateTime getCreationDate() {
