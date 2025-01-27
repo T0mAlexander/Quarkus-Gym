@@ -21,6 +21,7 @@
 - [ ] Estipular tempo máximo de 10 minutos para validação do check-in
 - [ ] Check-in apenas será validado por administradores
 - [ ] Academias serão cadastradas apenas por administradores
+- [x] Documentação do uso da API com Swagger UI e OpenAPI
 
 ## Requisitos Não-Funcionais
 
