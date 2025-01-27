@@ -9,6 +9,7 @@ import org.quarkus.algorithms.VincentyAlgorithm;
 import org.quarkus.models.Gym;
 import org.quarkus.repositories.GymRepository;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -35,13 +36,18 @@ public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
     return listAll().onItem().transform(
       gyms -> gyms.stream()
       .filter(gym -> {
-        double distance = VincentyAlgorithm.distance(
+        double distance = VincentyAlgorithm.calculateDistance(
           new Coordinates(latitude, longitude),
           new Coordinates(gym.getLocation())
         );
 
         return distance <= radiusInMetres;
       }).collect(Collectors.toList()));
+  }
+
+  @Override
+  public Uni<Gym> findById(UUID id) {
+    return find("id", id).firstResult();
   }
 
   @Override
