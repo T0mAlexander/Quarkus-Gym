@@ -31,7 +31,12 @@ public class User extends PanacheEntityBase {
   @OneToMany(mappedBy = "user")
   private List<CheckIn> checkIns;
 
-  public User() {}
+  public User() {
+  }
+
+  public User(UUID userId) {
+    this.id = userId;
+  }
 
   public UUID getId() {
     return id;
