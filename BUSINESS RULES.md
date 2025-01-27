@@ -4,7 +4,7 @@
 
 - [x] Cadastros
 - [x] Autenticação
-- [ ] Realização de um check-in pelo usuário
+- [x] Realização de um check-in pelo usuário
 - [ ] Consultar o perfil de um usuário logado
 - [ ] Consultar o histórico de check-ins
 - [x] Criação de academias
@@ -16,8 +16,8 @@
 ## Requisitos opcionais
 
 - [x] Impedir cadastro de endereços de email duplicados
-- [ ] Impedir 2 check-in no mesmo dia
-- [ ] Permitir check-in numa distância máxima de até 250 metros da academia
+- [x] Impedir 2 check-in no mesmo dia
+- [x] Permitir check-in numa distância máxima de até 250 metros da academia
 - [ ] Estipular tempo máximo de 10 minutos para validação do check-in
 - [ ] Check-in apenas será validado por administradores
 - [ ] Academias serão cadastradas apenas por administradores
