@@ -7,14 +7,14 @@ package org.quarkus.algorithms;
  */
 
 public class VincentyAlgorithm {
-  public static double distance(Coordinates from, Coordinates to) {
+  public static double calculateDistance(Coordinates from, Coordinates to) {
     final double semiMajorAxis = 6378137.0; // Raio equatorial da Terra (em metros)
     final double flattening = 1 / 298.257223563; // Diferença entre o raio equatorial e polar dividido pelo equatorial
     final double semiMinorAxis = (1 - flattening) * semiMajorAxis;
 
-    double longitudeDifference = toRadian(to.longitude() - from.longitude());
-    double reducedLatitudeFrom = Math.atan((1 - flattening) * Math.tan(toRadian(from.latitude())));
-    double reducedLatitudeTo = Math.atan((1 - flattening) * Math.tan(toRadian(to.latitude())));
+    double longitudeDifference = toRadians(to.longitude() - from.longitude());
+    double reducedLatitudeFrom = Math.atan((1 - flattening) * Math.tan(toRadians(from.latitude())));
+    double reducedLatitudeTo = Math.atan((1 - flattening) * Math.tan(toRadians(to.latitude())));
 
     double sinReducedLatitudeFrom = Math.sin(reducedLatitudeFrom);
     double cosReducedLatitudeFrom = Math.cos(reducedLatitudeFrom);
@@ -78,7 +78,12 @@ public class VincentyAlgorithm {
     return semiMinorAxis * A * (sigma - deltaSigma); // Unidade no SI: metros (m)
   }
 
-  private static double toRadian(double degree) {
+  public static boolean validCoords(Coordinates coords) {
+    return coords.latitude() >= -90 && coords.latitude() <= 90
+      && coords.longitude() >= -180 && coords.longitude() <= 180;
+  }
+
+  private static double toRadians(double degree) {
     return degree * (Math.PI / 180);
   }
 
