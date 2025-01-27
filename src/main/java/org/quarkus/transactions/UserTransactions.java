@@ -15,6 +15,6 @@ public class UserTransactions implements PanacheRepository<User>, UserRepository
 
   @Override
   public Uni<User> create(User user) {
-    return persist(user);
+    return getSession().chain(session -> session.merge(user));
   }
 }
