@@ -4,19 +4,19 @@
 
 CREATE TABLE check_ins (
   id UUID NOT NULL,
-  creationDate TIMESTAMP(6),
-  validationDate TIMESTAMP(6),
+  creation_date TIMESTAMP(6),
   gym_id UUID,
   user_id UUID,
+  validation_date TIMESTAMP(6),
   PRIMARY KEY (id)
 );
 
-ALTER TABLE IF EXISTS check_ins
+ALTER TABLE check_ins
   ADD CONSTRAINT fk_check_ins_gym_id
   FOREIGN KEY (gym_id)
   REFERENCES gyms(id);
 
-ALTER TABLE IF EXISTS check_ins
+ALTER TABLE check_ins
   ADD CONSTRAINT fk_check_ins_user_id
   FOREIGN KEY (user_id)
   REFERENCES users(id);
