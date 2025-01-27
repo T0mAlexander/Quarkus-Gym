@@ -36,7 +36,7 @@ public class GymNearbyRoute {
       .onItem().transform(gyms -> {
         List<GymNearbyValidation> response = gyms.stream()
           .map(gym -> {
-            double distanceFromUser = VincentyAlgorithm.distance(
+            double distanceFromUser = VincentyAlgorithm.calculateDistance(
               new Coordinates(latitude, longitude),
               new Coordinates(
                 gym.getLocation().getY(),
