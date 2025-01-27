@@ -37,7 +37,7 @@ public class GymCreationRoute {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> createGym(@Valid GymCreationValidation request) {
-    return database.create(
+    return database.createGym(
         request.name(),
         request.email(),
         request.description(),
