@@ -9,6 +9,8 @@ import org.quarkus.transactions.UserTransactions;
 import org.quarkus.models.User;
 import org.quarkus.services.errors.UserExistsException;
 
+import java.util.UUID;
+
 @ApplicationScoped
 public class UserRegisterService {
   private final UserTransactions service;
@@ -21,17 +23,19 @@ public class UserRegisterService {
   @WithTransaction
   public Uni<User> create(String name, String email, String password) {
     String passwordHash = BCrypt.withDefaults().hashToString(6, password.toCharArray());
+    UUID userId = UUID.randomUUID();
 
     return service.findByEmail(email)
       .onItem().ifNotNull().failWith(
         new UserExistsException("Este usuário já está cadastrado!"))
       .onItem().ifNull()
       .switchTo(() -> {
-        User newUser = new User();
+        User newUser = new User(userId);
         newUser.setName(name);
         newUser.setEmail(email);
         newUser.setPassword(passwordHash);
         return service.create(newUser);
-      });
+      }
+    );
   }
 }
