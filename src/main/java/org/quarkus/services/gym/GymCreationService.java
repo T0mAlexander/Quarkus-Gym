@@ -7,6 +7,8 @@ import jakarta.inject.Inject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.quarkus.algorithms.Coordinates;
+import org.quarkus.algorithms.VincentyAlgorithm;
 import org.quarkus.models.Gym;
 import org.quarkus.services.errors.GymExistsException;
 import org.quarkus.services.errors.InvalidCoordsException;
@@ -23,12 +25,10 @@ public class GymCreationService {
   }
 
   @WithTransaction
-  public Uni<Gym> create(String name, String email, String description, String phone, Double latitude, Double longitude) {
+  public Uni<Gym> createGym(String name, String email, String description, String phone, Double latitude, Double longitude) {
 
-    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      return Uni.createFrom().failure(
-        new InvalidCoordsException("Coordenadas inválidas!")
-      );
+    if (VincentyAlgorithm.validCoords(new Coordinates(latitude, longitude))) {
+      return Uni.createFrom().failure(new InvalidCoordsException("Coordenadas inválidas!"));
     }
 
     return service.findByEmail(email).onItem().ifNotNull()

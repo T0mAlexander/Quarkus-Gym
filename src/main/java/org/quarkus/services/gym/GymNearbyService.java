@@ -4,6 +4,8 @@ import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.quarkus.algorithms.Coordinates;
+import org.quarkus.algorithms.VincentyAlgorithm;
 import org.quarkus.models.Gym;
 import org.quarkus.services.errors.InvalidCoordsException;
 import org.quarkus.transactions.GymTransactions;
@@ -21,7 +23,7 @@ public class GymNearbyService {
 
   @WithTransaction
   public Uni<List<Gym>> nearbyGyms(Double userLatitude, Double userLongitude) {
-    if (userLatitude < -90 || userLatitude > 90 || userLongitude < -180 || userLongitude > 180) {
+    if (VincentyAlgorithm.validCoords(new Coordinates(userLatitude, userLongitude))) {
       return Uni.createFrom().failure(
         new InvalidCoordsException("Coordenadas inválidas!")
       );
