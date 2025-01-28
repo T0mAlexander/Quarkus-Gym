@@ -14,8 +14,8 @@ import java.util.UUID;
 public class CheckInTransactions implements PanacheRepository<CheckIn>, CheckInRepository {
 
   @Override
-  public Uni<List<CheckIn>> userHistoric(UUID userId, int page) {
-    return null;
+  public Uni<List<CheckIn>> userHistory(UUID id, int page) {
+    return find("userId", id).page(page - 1, 10).list();
   }
 
   @Override
