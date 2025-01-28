@@ -3,6 +3,7 @@ package org.quarkus.services.checkin;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.quarkus.algorithms.Coordinates;
 import org.quarkus.algorithms.VincentyAlgorithm;
 import org.quarkus.models.CheckIn;
@@ -21,6 +22,7 @@ public class CheckInCreationService {
   private final CheckInTransactions service;
   private final GymTransactions gym;
 
+  @Inject
   public CheckInCreationService(CheckInTransactions service, GymTransactions gym) {
     this.service = service;
     this.gym = gym;
@@ -40,16 +42,21 @@ public class CheckInCreationService {
       double maxCheckInDistance = 250.0; // 250 metros
 
       if (userDistance > maxCheckInDistance) {
-        throw new MaxDistanceException("Você está distante da academia para realizar o check-in!");
+        return Uni.createFrom().failure(new MaxDistanceException("Você está distante da academia para realizar o check-in!"));
       }
 
-      return service.findPreviousCheckIn(userId, LocalDateTime.now()).onItem().ifNotNull().failWith(new CheckInLimitException("Limite de check-in diário atingido para esta academia!")).onItem().transformToUni(checkInOnSameDate -> {
+      return service.findPreviousCheckIn(
+        userId, LocalDateTime.now()
+      ).onItem().ifNotNull()
+        .failWith(
+          new CheckInLimitException("Limite de check-in diário atingido para esta academia!")
+        ).onItem().transformToUni(checkInOnSameDate -> {
         CheckIn checkIn = new CheckIn();
 
         checkIn.setGymId(gymId);
         checkIn.setUserId(userId);
         checkIn.setCreationDate(LocalDateTime.now());
-        checkIn.setGym(foundGym); // Definindo a academia no objeto CheckIn
+        checkIn.setGym(foundGym);
 
         return service.create(checkIn);
       });
