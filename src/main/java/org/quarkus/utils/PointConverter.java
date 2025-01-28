@@ -1,4 +1,4 @@
-package org.quarkus.repositories.utils;
+package org.quarkus.utils;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
