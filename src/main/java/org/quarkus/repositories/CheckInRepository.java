@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CheckInRepository {
-  Uni<List<CheckIn>> userHistoric(UUID userId, int page);
+  Uni<List<CheckIn>> userHistory(UUID id, int page);
   Uni<CheckIn> findPreviousCheckIn(UUID userId, LocalDateTime date);
   Uni<Integer> checkInsCount(String userId);
   Uni<CheckIn> findCheckIn(String userId);
