@@ -4,7 +4,7 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.common.constraint.NotNull;
 import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;
-import org.quarkus.repositories.utils.PointConverter;
+import org.quarkus.utils.PointConverter;
 
 import java.util.List;
 import java.util.UUID;
