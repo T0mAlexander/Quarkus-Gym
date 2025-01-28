@@ -79,8 +79,8 @@ public class VincentyAlgorithm {
   }
 
   public static boolean validCoords(Coordinates coords) {
-    return coords.latitude() >= -90 && coords.latitude() <= 90
-      && coords.longitude() >= -180 && coords.longitude() <= 180;
+    return coords.latitude() < -90 || coords.latitude() > 90
+      || coords.longitude() < -180 || coords.longitude() > 180;
   }
 
   private static double toRadians(double degree) {
