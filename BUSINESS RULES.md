@@ -23,6 +23,7 @@
 ## Requisitos Não-Funcionais
 
 - [x] Persistência de dados com PostgreSQL
+- [x] Geolocalização e coordenadas com PostGIS
 - [x] Senhas devem ser criptografadas por segurança
 - [x] Lista de dados com 10 itens por página
 - [x] Identificação de usuários com JSON Web Token (JWT)
