@@ -8,7 +8,7 @@
 - [x] Consultar o histórico de check-ins
 - [x] Criação de academias
 - [x] Buscas de academias pelo nome
-- [x] Buscas de academias dentro do raio de 5km
+- [x] Buscas de academias dentro do raio de 5 km
 - [ ] Validação do check-in do usuário pelos administradores da academia
 
 ## Requisitos opcionais
