@@ -41,13 +41,18 @@ public class CheckInCreationRoute {
       if (cookie != null) {
         authToken = cookie.getValue();
       } else {
-        return Uni.createFrom().item(Response.status(UNAUTHORIZED).entity("Check-in não realizado. O usuário não está logado!").build());
+        return Uni.createFrom()
+          .item(Response.status(UNAUTHORIZED)
+            .entity("Check-in não realizado. O usuário não está logado!")
+            .build()
+        );
       }
     } else {
       authToken = authHeader.substring("Bearer".length()).trim();
     }
 
-    return jwt.validateToken(authToken).onItem().transformToUni(userId -> {
+    return jwt.validateToken(authToken).onItem()
+      .transformToUni(userId -> {
       if (userId == null) {
         return Uni.createFrom().item(Response.status(FORBIDDEN).entity("Token inválido ou expirado!").build());
       }
