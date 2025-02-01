@@ -73,6 +73,10 @@ dependencies {
   implementation 'io.quarkus:quarkus-jacoco:3.17.5'
   testImplementation 'io.quarkus:quarkus-junit5:3.17.5'
   testImplementation 'io.rest-assured:rest-assured:3.17.5'
+
+  // Outros
+  implementation 'io.quarkus:quarkus-scheduler:3.17.5'
+
   implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
 }
 
