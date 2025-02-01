@@ -4,9 +4,9 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.quarkus.services.errors.NewSessionException;
 import org.quarkus.models.User;
 import org.quarkus.services.errors.InvalidCredentialsException;
+import org.quarkus.services.errors.NewSessionException;
 import org.quarkus.transactions.UserTransactions;
 
 @ApplicationScoped
@@ -27,22 +27,23 @@ public class UserLoginService {
 
     return service.findByEmail(email)
       .onItem()
-      .transform(user -> {
+      .transformToUni(user -> {
         if (user == null) {
-          throw new InvalidCredentialsException("Usuário inexistente ou credenciais inválidas!");
+          return Uni.createFrom().failure(
+            new InvalidCredentialsException("Usuário inexistente ou credenciais inválidas!")
+          );
         }
 
-        boolean passwordMatch;
-        passwordMatch = BCrypt.verifyer()
-          .verify(
-            password.toCharArray(),
-            user.getPassword()).verified;
+        boolean passwordMatch = BCrypt.verifyer()
+          .verify(password.toCharArray(), user.getPassword()).verified;
 
         if (!passwordMatch) {
-          throw new InvalidCredentialsException("Senha inválida!");
+          return Uni.createFrom().failure(
+            new InvalidCredentialsException("Senha inválida!")
+          );
         }
 
-        return user;
+        return service.create(user);
       });
   }
 }
