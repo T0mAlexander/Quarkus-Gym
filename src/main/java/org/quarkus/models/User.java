@@ -4,12 +4,14 @@ import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.quarkus.utils.user.Role;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Cacheable
 @SuppressWarnings("unused")
 public class User extends PanacheEntityBase {
   @Id
@@ -28,10 +30,22 @@ public class User extends PanacheEntityBase {
   @NotNull
   private String password;
 
+  @Enumerated(EnumType.STRING)
+  @Column
+  @NotNull
+  private Role role;
+
   @OneToMany(mappedBy = "user")
   private List<CheckIn> checkIns;
 
   public User() {
+  }
+
+  public User(String name, String email, String password, Role role) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.role = role;
   }
 
   public User(UUID userId) {
@@ -44,12 +58,6 @@ public class User extends PanacheEntityBase {
 
   public void setId(UUID id) {
     this.id = id;
-  }
-
-  public User(String name, String email, String password) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
   }
 
   public String getName() {
@@ -74,5 +82,13 @@ public class User extends PanacheEntityBase {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 }

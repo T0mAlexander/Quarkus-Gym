@@ -11,6 +11,13 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "gyms")
+@Cacheable
+@NamedQuery(
+  name = "Gym.findCloseGyms",
+  query = "SELECT target FROM Gym target WHERE target.location IS NOT NULL",
+  hints = @QueryHint(name = "org.hibernate.cacheable", value = "true")
+)
+@SuppressWarnings("unused")
 public class Gym extends PanacheEntityBase {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
