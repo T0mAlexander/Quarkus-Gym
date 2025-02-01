@@ -16,9 +16,9 @@
 - [x] Impedir cadastro de endereços de email duplicados
 - [x] Impedir 2 check-in no mesmo dia
 - [x] Permitir check-in numa distância máxima de até 250 metros da academia
-- [ ] Estipular tempo máximo de 10 minutos para validação do check-in
-- [ ] Academias cadastradas apenas por administrador
-- [ ] Check-in validadado por administrador da academia
+- [x] Estipular tempo máximo de 10 minutos para validação do check-in
+- [x] Academias cadastradas apenas por administrador
+- [x] Check-in validadado por administrador da academia
 
 ## Requisitos Não-Funcionais
 
