@@ -5,16 +5,17 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.errors.InvalidGymSearchException;
 import org.quarkus.services.gym.GymSearchService;
 import org.quarkus.validations.gym.GymSearchValidation;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.*;
-
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_ACCEPTABLE;
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 
 @Path("/gyms")
 @RegisterRestClient
@@ -27,7 +28,7 @@ public class GymSearchRoute {
   @GET
   @Path("/search")
   @Produces(MediaType.APPLICATION_JSON)
-  public Uni<Response> createGym(@QueryParam("query") String query, @QueryParam("page") @DefaultValue("0") int page) {
+  public Uni<Response> searchGym(@QueryParam("query") String query, @QueryParam("page") @DefaultValue("0") int page) {
     return database.searchGyms(query, page)
       .onItem().transform(gyms -> {
         List<GymSearchValidation> response = gyms.stream()
