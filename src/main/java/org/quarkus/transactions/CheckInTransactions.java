@@ -32,7 +32,7 @@ public class CheckInTransactions implements PanacheRepository<CheckIn>, CheckInR
       Parameters
         .with("userId", userId)
         .and("date", date)
-        .and("status", Status.EXPIRED)
+        .and("status", Status.VALIDATED)
     ).firstResult();
   }
 
