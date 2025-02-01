@@ -3,11 +3,20 @@ package org.quarkus.models;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 import io.smallrye.common.constraint.NotNull;
 import jakarta.persistence.*;
+import org.quarkus.utils.checkin.Status;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "check_ins")
+@Cacheable
+@NamedQuery(
+  name = "CheckIn.userHistory",
+  query = "SELECT target FROM CheckIn target WHERE target.userId = :userId ORDER BY target.creationDate DESC",
+  hints = @QueryHint(name = "org.hibernate.cacheable", value = "true")
+)
+@SuppressWarnings("unused")
 public class CheckIn extends PanacheEntityBase {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,14 +35,28 @@ public class CheckIn extends PanacheEntityBase {
   @Column(name = "validation_date")
   private LocalDateTime validationDate;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  private Status status;
+
   @ManyToOne
   @NotNull
-  @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_check_ins_user_id"), insertable = false, updatable = false)
+  @JoinColumn(
+    name = "user_id",
+    foreignKey = @ForeignKey(name = "fk_check_ins_user_id"),
+    insertable = false,
+    updatable = false
+  )
   private User user;
 
   @ManyToOne
   @NotNull
-  @JoinColumn(name = "gym_id", foreignKey = @ForeignKey(name = "fk_check_ins_gym_id"), insertable = false, updatable = false)
+  @JoinColumn(
+    name = "gym_id",
+    foreignKey = @ForeignKey(name = "fk_check_ins_gym_id"),
+    insertable = false,
+    updatable = false
+  )
   private Gym gym;
 
   public CheckIn() {}
@@ -92,5 +115,13 @@ public class CheckIn extends PanacheEntityBase {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
   }
 }

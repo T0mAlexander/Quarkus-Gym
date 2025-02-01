@@ -1,0 +1,78 @@
+package org.quarkus.services.checkin;
+
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
+import io.quarkus.panache.common.Parameters;
+import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.quarkus.models.CheckIn;
+import org.quarkus.services.errors.InvalidCheckInException;
+import org.quarkus.services.user.TokenService;
+import org.quarkus.transactions.CheckInTransactions;
+import org.quarkus.utils.checkin.Status;
+import org.quarkus.utils.user.Role;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@ApplicationScoped
+public class CheckInValidationService {
+  private final CheckInTransactions service;
+  private final TokenService jwt;
+
+  @Inject
+  public CheckInValidationService(CheckInTransactions service, TokenService jwt) {
+    this.service = service;
+    this.jwt = jwt;
+  }
+
+  @WithTransaction
+  public Uni<CheckIn> validateCheckIn(UUID checkInId, String token) {
+    return service.findById(checkInId).onItem().ifNull().failWith(new InvalidCheckInException("Check-in inválido ou inexistente!")).onItem().transformToUni(checkIn -> {
+      if (checkIn.getStatus() == Status.VALIDATED) {
+        return Uni.createFrom().failure(new InvalidCheckInException("Este check-in já foi validado!"));
+      }
+
+      if (Duration.between(checkIn.getCreationDate(), LocalDateTime.now()).toMinutes() >= 1) {
+        checkIn.setStatus(Status.EXPIRED);
+        return service.update(
+          """
+              UPDATE CheckIn
+              SET status = :status
+              WHERE id = :id
+            """,
+            Parameters
+              .with("status", checkIn.getStatus())
+              .and("id", checkIn.getId())
+          ).replaceWith(checkIn).onItem()
+            .transformToUni(updatedCheckIn -> Uni.createFrom()
+              .failure(new InvalidCheckInException("Check-in expirado. Solicite um novo ao usuário!")
+          )
+        );
+      }
+
+      return jwt.checkRole(token).onItem().transformToUni(role -> {
+        if (role != Role.ADMIN) {
+          return Uni.createFrom().failure(new InvalidCheckInException("Este usuário não possui privilégios administrativos para validar check-ins!"));
+        }
+
+        checkIn.setStatus(Status.VALIDATED);
+        checkIn.setValidationDate(LocalDateTime.now());
+
+        return service.update(
+          """
+              UPDATE CheckIn
+              SET status = :status,
+                validationDate = :validationDate
+              WHERE id = :id
+            """,
+            Parameters
+              .with("status", checkIn.getStatus())
+              .and("validationDate", checkIn.getValidationDate())
+              .and("id", checkIn.getId())
+          ).replaceWith(checkIn);
+      });
+    });
+  }
+}

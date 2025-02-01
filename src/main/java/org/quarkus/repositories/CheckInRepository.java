@@ -10,7 +10,6 @@ import java.util.UUID;
 public interface CheckInRepository {
   Uni<List<CheckIn>> userHistory(UUID id, int page);
   Uni<CheckIn> findPreviousCheckIn(UUID userId, LocalDateTime date);
-  Uni<Integer> checkInsCount(String userId);
-  Uni<CheckIn> findCheckIn(String userId);
   Uni<CheckIn> create(CheckIn checkIn);
+  Uni<CheckIn> findById(UUID checkInId);
 }
