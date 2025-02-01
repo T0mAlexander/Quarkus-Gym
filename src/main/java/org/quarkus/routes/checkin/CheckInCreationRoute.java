@@ -43,9 +43,9 @@ public class CheckInCreationRoute {
       } else {
         return Uni.createFrom()
           .item(Response.status(UNAUTHORIZED)
-            .entity("Check-in não realizado. O usuário não está logado!")
+            .entity("Check-in não realizado. Nenhum usuário logado!")
             .build()
-        );
+          );
       }
     } else {
       authToken = authHeader.substring("Bearer".length()).trim();
@@ -53,20 +53,20 @@ public class CheckInCreationRoute {
 
     return jwt.validateToken(authToken).onItem()
       .transformToUni(userId -> {
-      if (userId == null) {
-        return Uni.createFrom().item(Response.status(FORBIDDEN).entity("Token inválido ou expirado!").build());
-      }
+        if (userId == null) {
+          return Uni.createFrom().item(Response.status(FORBIDDEN).entity("Token inválido ou expirado!").build());
+        }
 
-      return service.createCheckIn(
-        userId, gymId,
-        request.latitude(),
-        request.longitude()
-      ).onItem().transform(
-        checkIn -> Response.status(OK).entity("Check-in realizado na academia " + checkIn.getGym().getName() + "!").build()).onFailure(MaxDistanceException.class).recoverWithItem(error -> Response.status(UNAUTHORIZED).entity(error.getMessage()).build()
-      ).onFailure().recoverWithItem(
-        error -> Response.status(UNAUTHORIZED)
-          .entity(error.getMessage()).build()
-      );
-    });
+        return service.createCheckIn(
+          userId, gymId,
+          request.latitude(),
+          request.longitude()
+        ).onItem().transform(
+          checkIn -> Response.status(OK).entity("Check-in realizado na academia " + checkIn.getGym().getName() + "!").build()).onFailure(MaxDistanceException.class).recoverWithItem(error -> Response.status(UNAUTHORIZED).entity(error.getMessage()).build()
+        ).onFailure().recoverWithItem(
+          error -> Response.status(UNAUTHORIZED)
+            .entity(error.getMessage()).build()
+        );
+      });
   }
 }
