@@ -1,5 +1,6 @@
 package org.quarkus.services.checkin;
 
+import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -12,6 +13,7 @@ import org.quarkus.services.errors.GymNotFoundException;
 import org.quarkus.services.errors.MaxDistanceException;
 import org.quarkus.transactions.CheckInTransactions;
 import org.quarkus.transactions.GymTransactions;
+import org.quarkus.utils.checkin.Status;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,6 +31,7 @@ public class CheckInCreationService {
   }
 
   @WithTransaction
+  @CacheInvalidate(cacheName = "checkIns")
   public Uni<CheckIn> createCheckIn(UUID userId, UUID gymId, double userLatitude, double userLongitude) {
     return gym.findById(gymId).onItem().ifNull().failWith(new GymNotFoundException("Esta academia não existe!")).onItem().transformToUni(foundGym -> {
 
@@ -42,20 +45,22 @@ public class CheckInCreationService {
       double maxCheckInDistance = 250.0; // 250 metros
 
       if (userDistance > maxCheckInDistance) {
-        return Uni.createFrom().failure(new MaxDistanceException("Você está distante da academia para realizar o check-in!"));
+        return Uni.createFrom()
+          .failure(new MaxDistanceException("Você está distante da academia para realizar o check-in!"));
       }
 
       return service.findPreviousCheckIn(
         userId, LocalDateTime.now()
-      ).onItem().ifNotNull()
-        .failWith(
-          new CheckInLimitException("Limite de check-in diário atingido para esta academia!")
-        ).onItem().transformToUni(checkInOnSameDate -> {
-        CheckIn checkIn = new CheckIn();
+      ).onItem().transformToUni(previousCheckIn -> {
+        if (previousCheckIn != null && previousCheckIn.getStatus() != Status.EXPIRED) {
+          return Uni.createFrom().failure(new CheckInLimitException("Limite diário de check-in atingido nesta academia!"));
+        }
 
+        CheckIn checkIn = new CheckIn();
         checkIn.setGymId(gymId);
         checkIn.setUserId(userId);
         checkIn.setCreationDate(LocalDateTime.now());
+        checkIn.setStatus(Status.CREATED);
         checkIn.setGym(foundGym);
 
         return service.create(checkIn);

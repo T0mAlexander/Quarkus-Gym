@@ -1,10 +1,12 @@
 package org.quarkus.transactions;
 
 import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.quarkus.panache.common.Parameters;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.quarkus.models.CheckIn;
 import org.quarkus.repositories.CheckInRepository;
+import org.quarkus.utils.checkin.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,18 +21,19 @@ public class CheckInTransactions implements PanacheRepository<CheckIn>, CheckInR
   }
 
   @Override
+  public Uni<CheckIn> findById(UUID checkInId) {
+    return find("id", checkInId).firstResult();
+  }
+
+  @Override
   public Uni<CheckIn> findPreviousCheckIn(UUID userId, LocalDateTime date) {
-    return find("userId = ?1 AND DATE(creationDate) = DATE(?2)", userId, date).firstResult();
-  }
-
-  @Override
-  public Uni<Integer> checkInsCount(String userId) {
-    return null;
-  }
-
-  @Override
-  public Uni<CheckIn> findCheckIn(String userId) {
-    return null;
+    return find(
+      "userId = :userId AND DATE(creationDate) = DATE(:date) AND status != :status",
+      Parameters
+        .with("userId", userId)
+        .and("date", date)
+        .and("status", Status.EXPIRED)
+    ).firstResult();
   }
 
   @Override
