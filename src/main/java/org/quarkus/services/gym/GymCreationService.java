@@ -1,5 +1,6 @@
 package org.quarkus.services.gym;
 
+import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,6 +26,7 @@ public class GymCreationService {
   }
 
   @WithTransaction
+  @CacheInvalidate(cacheName = "gyms")
   public Uni<Gym> createGym(String name, String email, String description, String phone, Double latitude, Double longitude) {
 
     if (VincentyAlgorithm.validCoords(new Coordinates(latitude, longitude))) {
