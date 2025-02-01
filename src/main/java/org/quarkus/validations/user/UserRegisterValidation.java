@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.quarkus.utils.user.Role;
 
 @Schema(name = "Registro de usuário")
 @SuppressWarnings("unused")
@@ -23,5 +24,9 @@ public record UserRegisterValidation (
   @Size(min = 6)
   @JsonProperty(access = Access.WRITE_ONLY)
   @Schema(description = "Senha do novo usuário")
-  String password
+  String password,
+
+  @NotNull
+  @Schema(description = "Cargo do novo usuário")
+  Role role
 ) {}

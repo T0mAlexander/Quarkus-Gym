@@ -1,8 +1,5 @@
 package org.quarkus.routes.user;
 
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT;
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED;
-
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -14,16 +11,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.quarkus.services.user.UserRegisterService;
 import org.quarkus.services.errors.UserExistsException;
+import org.quarkus.services.user.UserRegisterService;
 import org.quarkus.validations.user.UserRegisterValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Endpoint de registro de novos usuários. <br>
- * Caso o usuário já exista, será retornado um código <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409">{@code HTTP 409}</a>.
- */
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT;
+import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED;
 
 @Path("/users")
 @RegisterRestClient
@@ -43,7 +38,8 @@ public class UserRegisterRoute {
     return database.create(
         request.name(),
         request.email(),
-        request.password()
+        request.password(),
+        request.role()
       ).onItem()
       .transform(newUser -> {
         log.info("Usuário \"{}\" registrou-se na aplicação!", newUser.getName());
@@ -51,14 +47,16 @@ public class UserRegisterRoute {
         UserRegisterValidation response = new UserRegisterValidation(
           newUser.getName(),
           newUser.getEmail(),
-          newUser.getPassword()
+          newUser.getPassword(),
+          newUser.getRole()
         );
 
         return Response.status(CREATED).entity(response).build();
       }).onFailure(UserExistsException.class)
       .recoverWithItem(
         error -> Response.status(CONFLICT)
-          .entity(error.getMessage())
-          .build());
+          .entity(
+            error.getMessage()
+          ).build());
   }
 }
