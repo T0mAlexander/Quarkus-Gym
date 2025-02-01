@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Novo usuário",
+			"name": "Novo administrador",
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
@@ -16,7 +16,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Tom Alexander\",\n    \"email\": \"tom@java.com\",\n    \"password\": \"123456\"\n}",
+					"raw": "{\n    \"name\": \"Admin\",\n    \"email\": \"admin@quarkus.com\",\n    \"password\": \"123456\",\n    \"role\": \"ADMIN\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -39,13 +39,74 @@
 			"response": []
 		},
 		{
-			"name": "Login",
+			"name": "Novo usuário",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"tom@java.com\",\n    \"password\": \"123456\"\n}",
+					"raw": "{\n    \"name\": \"Usuário\",\n    \"email\": \"user@quarkus.com\",\n    \"password\": \"654321\",\n    \"role\": \"USER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (administrador)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@quarkus.com\",\n    \"password\": \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (usuário)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"user@quarkus.com\",\n    \"password\": \"654321\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,7 +135,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"Pratique Mart Minas\",\n  \"email\": \"pratique@gym.com\",\n  \"description\": \"Lorem ipsum dolor sit amet\",\n  \"phone\": \"(31) 1234-5678\",\n  \"latitude\": -19.882044,\n  \"longitude\": -44.028815\n}",
+					"raw": "{\n    \"name\": \"Pratique Mart Minas\",\n    \"email\": \"pratique@gym.com\",\n    \"description\": \"Lorem ipsum dolor sit amet\",\n    \"phone\": \"(31) 1234-5678\",\n    \"latitude\": -19.882044,\n    \"longitude\": -44.028815\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -126,7 +187,7 @@
 			"response": []
 		},
 		{
-			"name": "Buscar todas as academias",
+			"name": "Buscar academias por nome",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -232,16 +293,10 @@
 			"response": []
 		},
 		{
-			"name": "Check-in em academia",
+			"name": "Check-in em academia (<250 m)",
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer [token]",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"latitude\": -19.8837605, \n    \"longitude\": -44.0274092\n}",
@@ -252,7 +307,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/gyms/72276212-37a1-4bad-9ea9-ba745bdea73d/check-in",
+					"raw": "http://localhost:8080/gyms/[ ID da academia ]/check-in",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -260,8 +315,103 @@
 					"port": "8080",
 					"path": [
 						"gyms",
-						"72276212-37a1-4bad-9ea9-ba745bdea73d",
+						"[ ID da academia ]",
 						"check-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check-in em academia (>250 m)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"latitude\": -19.876275, \n    \"longitude\": -44.000545\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/gyms/[ ID da academia ]/check-in",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gyms",
+						"[ ID da academia ]",
+						"check-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Obter histórico de check-ins",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/checkins/history?page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"checkins",
+						"history"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Encerrar sessão",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validar um check-in",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/gyms/validate/[ID do check-in]",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"gyms",
+						"validate",
+						"[ID do check-in]"
 					]
 				}
 			},
