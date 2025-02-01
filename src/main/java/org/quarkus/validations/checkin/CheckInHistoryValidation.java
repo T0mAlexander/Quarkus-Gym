@@ -24,12 +24,12 @@ public record CheckInHistoryValidation(
 
   @NotNull
   @JsonProperty("date")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy 'às' HH:mm'h'", locale = "pt-BR")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd'/'MM'/'yyyy 'às' HH:mm'h'", locale = "pt-BR")
   @Schema(description = "Data do check-in")
   LocalDateTime date,
 
   @JsonProperty("validation")
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy 'às' HH:mm'h'", locale = "pt-BR")
-  @Schema(description = "Data da validação")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd'/'MM'/'yyyy 'às' HH:mm'h'", locale = "pt-BR")
+  @Schema(description = "Data da validação do check-in")
   LocalDateTime validationDate
 ) {}
