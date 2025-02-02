@@ -8,6 +8,14 @@ import org.locationtech.jts.io.WKBReader;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 
+/**
+ * Conversor Coordenadas ~ String.
+ * <p>
+ * Esta classe converte objetos do tipo Point para sua representação em WKT (Well-Known Text)
+ * para armazenamento no banco de dados e vice-versa.
+ * </p>
+ */
+
 @Converter(autoApply = true)
 public class PointConverter implements AttributeConverter<Point, String> {
 

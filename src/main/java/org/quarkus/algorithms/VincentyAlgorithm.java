@@ -1,12 +1,25 @@
 package org.quarkus.algorithms;
 
 /**
- * Algoritmo de cálculo de distâncias baseado na fórmula do matemático polaco-americano Thaddeus Vincenty publicada em 1975 que possui margem de precisão entre 10 centímetros até 0.5 milímetros
+ * Algoritmo de Vincenty para cálculo de distâncias geodésicas entre dois pontos na superfície da Terra.
+ * <p>
+ * Este algoritmo utiliza a fórmula de Vincenty, que é baseada em um elipsoide, para calcular a distância
+ * entre dois pontos dados em coordenadas geográficas (latitude e longitude).
+ * </p>
  * <p>
  * Referência: <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Fórmula de Vincenty - Wikipédia (Inglês)</a>
+ * </p>
  */
 
 public class VincentyAlgorithm {
+
+  /**
+   * Calcula a distância geodésica entre dois pontos utilizando a fórmula de Vincenty.
+   *
+   * @param from Coordenadas do ponto de origem.
+   * @param to Coordenadas do ponto de destino.
+   * @return A distância entre os dois pontos em metros. Retorna {@code Double.NaN} se a fórmula não convergir.
+   */
   public static double calculateDistance(Coordinates from, Coordinates to) {
     final double semiMajorAxis = 6378137.0; // Raio equatorial da Terra (em metros)
     final double flattening = 1 / 298.257223563; // Diferença entre o raio equatorial e polar dividido pelo equatorial
@@ -78,15 +91,34 @@ public class VincentyAlgorithm {
     return semiMinorAxis * A * (sigma - deltaSigma); // Unidade no SI: metros (m)
   }
 
+  /**
+   * Verifica se as coordenadas fornecidas são válidas.
+   *
+   * @param coords Coordenadas a serem verificadas.
+   * @return {@code true} se as coordenadas forem válidas, {@code false} caso contrário.
+   */
   public static boolean validCoords(Coordinates coords) {
     return coords.latitude() < -90 || coords.latitude() > 90
       || coords.longitude() < -180 || coords.longitude() > 180;
   }
 
+  /**
+   * Converte um valor em graus para radianos.
+   *
+   * @param degree Valor em graus.
+   * @return Valor convertido em radianos.
+   */
   private static double toRadians(double degree) {
     return degree * (Math.PI / 180);
   }
 
+  /**
+   * Formata a distância fornecida em uma string legível.
+   *
+   * @param distance Distância em metros.
+   * @return Distância formatada como uma string. Se a distância for menor que 1000 metros, retorna em metros,
+   * caso contrário, retorna em quilômetros.
+   */
   public static String formatDistance(double distance) {
     if (distance < 1000) {
       return String.format("%.0f m", distance);

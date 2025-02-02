@@ -9,6 +9,14 @@ import org.quarkus.utils.PointConverter;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Representa uma academia.
+ * <p>
+ * Esta classe mapeia a entidade de academia no banco de dados, incluindo informações
+ * sobre o nome, email, descrição, telefone e localização da academia.
+ * </p>
+ */
+
 @Entity
 @Table(name = "gyms")
 @Cacheable
@@ -19,30 +27,52 @@ import java.util.UUID;
 )
 @SuppressWarnings("unused")
 public class Gym extends PanacheEntityBase {
+
+  /**
+   * Identificador único da academia.
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  /**
+   * Nome da academia.
+   */
   @Column
   @NotNull
   private String name;
 
+  /**
+   * Email da academia.
+   */
   @Column
   @NotNull
   private String email;
 
+  /**
+   * Descrição da academia.
+   */
   @Column
   private String description;
 
+  /**
+   * Telefone da academia.
+   */
   @Column
   @NotNull
   private String phone;
 
+  /**
+   * Localização da academia.
+   */
   @Column(columnDefinition = "geometry(POINT, 4326)")
   @NotNull
   @Convert(converter = PointConverter.class)
   private Point location;
 
+  /**
+   * Lista de check-ins associados à academia.
+   */
   @OneToMany(mappedBy = "gym")
   private List<CheckIn> checkIns;
 
@@ -92,5 +122,13 @@ public class Gym extends PanacheEntityBase {
 
   public void setLocation(Point location) {
     this.location = location;
+  }
+
+  public List<CheckIn> getCheckIns() {
+    return checkIns;
+  }
+
+  public void setCheckIns(List<CheckIn> checkIns) {
+    this.checkIns = checkIns;
   }
 }

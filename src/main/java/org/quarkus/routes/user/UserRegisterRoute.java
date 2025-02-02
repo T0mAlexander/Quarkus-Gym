@@ -20,6 +20,14 @@ import org.slf4j.LoggerFactory;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CONFLICT;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.CREATED;
 
+/**
+ * Rota de registro de novos usuários.
+ * <p>
+ * Esta classe define os endpoints para registrar novos usuários,
+ * incluindo a validação dos dados de registro e a verificação de existência de usuário.
+ * </p>
+ */
+
 @Path("/users")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -29,6 +37,13 @@ public class UserRegisterRoute {
 
   @Inject
   UserRegisterService database;
+
+  /**
+   * Registra um novo usuário.
+   *
+   * @param request Dados de validação do registro do usuário.
+   * @return A resposta do registro do usuário.
+   */
 
   @POST
   @Path("/signup")

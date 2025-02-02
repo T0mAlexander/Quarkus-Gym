@@ -5,6 +5,14 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+/**
+ * Validação de Check-In.
+ * <p>
+ * Esta classe define os parâmetros de validação para a criação de um check-in,
+ * incluindo a latitude e longitude atuais do usuário.
+ * </p>
+ */
+
 @Schema(name = "Validação de Check-In")
 public record CheckInCreationValidation(
   @NotNull

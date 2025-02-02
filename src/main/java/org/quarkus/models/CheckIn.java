@@ -8,6 +8,14 @@ import org.quarkus.utils.checkin.Status;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Representa um check-in realizado por um usuário em uma academia.
+ * <p>
+ * Esta classe mapeia a entidade de check-in no banco de dados, incluindo informações
+ * sobre o usuário, a academia, datas de criação e validação, e o status do check-in.
+ * </p>
+ */
+
 @Entity
 @Table(name = "check_ins")
 @Cacheable
@@ -18,27 +26,49 @@ import java.util.UUID;
 )
 @SuppressWarnings("unused")
 public class CheckIn extends PanacheEntityBase {
+
+  /**
+   * Identificador único do check-in.
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  /**
+   * Identificador do usuário que realizou o check-in.
+   */
   @Column(name = "user_id")
   private UUID userId;
 
+  /**
+   * Identificador da academia onde o check-in foi realizado.
+   */
   @Column(name = "gym_id")
   private UUID gymId;
 
+  /**
+   * Data e hora de criação do check-in.
+   */
   @Column(name = "creation_date")
   @NotNull
   private LocalDateTime creationDate;
 
+  /**
+   * Data e hora de validação do check-in.
+   */
   @Column(name = "validation_date")
   private LocalDateTime validationDate;
 
+  /**
+   * Status atual do check-in.
+   */
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private Status status;
 
+  /**
+   * Usuário associado ao check-in.
+   */
   @ManyToOne
   @NotNull
   @JoinColumn(
@@ -49,6 +79,9 @@ public class CheckIn extends PanacheEntityBase {
   )
   private User user;
 
+  /**
+   * Academia associada ao check-in.
+   */
   @ManyToOne
   @NotNull
   @JoinColumn(

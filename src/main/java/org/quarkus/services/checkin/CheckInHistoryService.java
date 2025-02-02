@@ -11,6 +11,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Serviço de histórico de check-ins.
+ * <p>
+ * Esta classe define os métodos para recuperar o histórico de check-ins de usuários,
+ * permitindo a visualização dos check-ins realizados em academias.
+ * </p>
+ */
+
 @ApplicationScoped
 @SuppressWarnings("unused")
 public class CheckInHistoryService {
@@ -20,6 +28,14 @@ public class CheckInHistoryService {
   public CheckInHistoryService(CheckInTransactions service) {
     this.service = service;
   }
+
+  /**
+   * Recupera o histórico de check-ins de um usuário.
+   *
+   * @param userId ID do usuário.
+   * @param page Número da página para paginação.
+   * @return A lista de validações de histórico de check-ins.
+   */
 
   @WithTransaction
   public Uni<List<CheckInHistoryValidation>> checkInHistory(UUID userId, int page) {

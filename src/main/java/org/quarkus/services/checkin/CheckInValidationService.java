@@ -18,6 +18,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Serviço de validação de check-ins.
+ * <p>
+ * Esta classe define os métodos para validar check-ins de usuários em academias,
+ * incluindo a verificação de expiração e autorização do usuário.
+ * </p>
+ */
+
 @ApplicationScoped
 public class CheckInValidationService {
   private final CheckInTransactions service;
@@ -28,6 +36,15 @@ public class CheckInValidationService {
     this.service = service;
     this.jwt = jwt;
   }
+
+  /**
+   * Valida um check-in de um usuário.
+   *
+   * @param checkInId ID do check-in.
+   * @param token Token de autenticação do usuário.
+   * @return O check-in validado.
+   * @throws InvalidCheckInException Se o check-in for inválido ou inexistente.
+   */
 
   @WithTransaction
   public Uni<CheckIn> validateCheckIn(UUID checkInId, String token) {
@@ -70,6 +87,12 @@ public class CheckInValidationService {
       });
   }
 
+  /**
+   * Tarefa agendada para verificar por check-ins expirados a cada 5 minutos atribuindo o status de expirado.
+   *
+   * @return Uma Uni<Void> indicando a conclusão da verificação.
+   */
+
   @WithTransaction
   @Scheduled(every = "5m")
   @SuppressWarnings("unused")
@@ -96,5 +119,4 @@ public class CheckInValidationService {
       return Uni.combine().all().unis(expiredCheckIns).collectFailures().discardItems();
     });
   }
-
 }

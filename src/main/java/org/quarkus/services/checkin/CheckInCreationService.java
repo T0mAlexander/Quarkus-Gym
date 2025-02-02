@@ -18,6 +18,14 @@ import org.quarkus.utils.checkin.Status;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Serviço de criação de check-ins.
+ * <p>
+ * Esta classe define os métodos para criar check-ins de usuários em academias,
+ * incluindo a validação de distância e limite diário de check-ins.
+ * </p>
+ */
+
 @ApplicationScoped
 @SuppressWarnings("unused")
 public class CheckInCreationService {
@@ -29,6 +37,19 @@ public class CheckInCreationService {
     this.service = service;
     this.gym = gym;
   }
+
+  /**
+   * Cria um check-in para um usuário em uma academia.
+   *
+   * @param userId ID do usuário.
+   * @param gymId ID da academia.
+   * @param userLatitude Latitude da localização do usuário.
+   * @param userLongitude Longitude da localização do usuário.
+   * @return O check-in criado.
+   * @throws GymNotFoundException Se a academia não for encontrada.
+   * @throws MaxDistanceException Se o usuário estiver muito distante da academia.
+   * @throws CheckInLimitException Se o limite diário de check-ins for atingido.
+   */
 
   @WithTransaction
   @CacheInvalidate(cacheName = "checkIns")

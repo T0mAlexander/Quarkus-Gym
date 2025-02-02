@@ -20,6 +20,14 @@ import java.util.List;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_ACCEPTABLE;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 
+/**
+ * Rota para busca de academias próximas.
+ * <p>
+ * Esta classe define os endpoints para buscar academias próximas a uma localização
+ * fornecida, utilizando o algoritmo de Vincenty para calcular a distância.
+ * </p>
+ */
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -27,6 +35,14 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 public class GymNearbyRoute {
   @Inject
   GymNearbyService service;
+
+  /**
+   * Busca academias próximas a uma localização fornecida.
+   *
+   * @param latitude Latitude da localização do usuário.
+   * @param longitude Longitude da localização do usuário.
+   * @return A resposta com a lista de academias próximas.
+   */
 
   @GET
   @Path("/nearby")

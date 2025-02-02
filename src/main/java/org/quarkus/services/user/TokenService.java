@@ -38,6 +38,12 @@ public class TokenService {
     );
   }
 
+  /**
+   * Renova um token JWT existente.
+   *
+   * @param token O token JWT a ser renovado.
+   * @return O novo token JWT.
+   */
   public Uni<String> renewToken(String token) {
     return validateToken(token).onItem().transformToUni(userId -> {
       if (userId == null) {
@@ -56,6 +62,12 @@ public class TokenService {
     });
   }
 
+  /**
+   * Valida um token JWT.
+   *
+   * @param token O token JWT a ser validado.
+   * @return O ID do usuário se o token for válido, caso contrário, null.
+   */
   public Uni<UUID> validateToken(String token) {
     return Uni.createFrom().item(() -> {
       try {
@@ -69,10 +81,21 @@ public class TokenService {
     });
   }
 
+  /**
+   * Revoga um token JWT.
+   *
+   * @return Uma Uni<Void> indicando a conclusão da revogação.
+   */
   public Uni<Void> revokeToken() {
     return Uni.createFrom().voidItem();
   }
 
+  /**
+   * Verifica o cargo do usuário a partir do token JWT.
+   *
+   * @param token O token JWT a ser verificado.
+   * @return O cargo do usuário.
+   */
   public Uni<Role> checkRole(String token) {
     return Uni.createFrom().item(() -> {
       try {

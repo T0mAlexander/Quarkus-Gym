@@ -9,6 +9,14 @@ import org.quarkus.services.errors.InvalidCredentialsException;
 import org.quarkus.services.errors.NewSessionException;
 import org.quarkus.transactions.UserTransactions;
 
+/**
+ * Serviço de login de usuários.
+ * <p>
+ * Esta classe define os métodos para autenticar usuários na aplicação,
+ * incluindo a verificação de credenciais e a criação de sessão.
+ * </p>
+ */
+
 @ApplicationScoped
 public class UserLoginService {
   private final UserTransactions service;
@@ -17,6 +25,17 @@ public class UserLoginService {
   public UserLoginService(UserTransactions service) {
     this.service = service;
   }
+
+  /**
+   * Autentica um usuário com base no email e senha fornecidos.
+   *
+   * @param email Email do usuário.
+   * @param password Senha do usuário.
+   * @param token Token de autenticação do usuário.
+   * @return O usuário autenticado.
+   * @throws InvalidCredentialsException Se as credenciais forem inválidas.
+   * @throws NewSessionException Se o usuário já estiver autenticado.
+   */
 
   public Uni<User> auth(String email, String password, String token) {
     if (token != null && !token.isEmpty()) {

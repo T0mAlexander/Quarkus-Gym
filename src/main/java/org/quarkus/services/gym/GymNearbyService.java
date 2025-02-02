@@ -12,6 +12,14 @@ import org.quarkus.transactions.GymTransactions;
 
 import java.util.List;
 
+/**
+ * Serviço de academias próximas.
+ * <p>
+ * Esta classe define os métodos para encontrar academias próximas à localização do usuário,
+ * incluindo a validação das coordenadas fornecidas.
+ * </p>
+ */
+
 @ApplicationScoped
 public class GymNearbyService {
   private final GymTransactions service;
@@ -20,6 +28,15 @@ public class GymNearbyService {
   public GymNearbyService(GymTransactions service) {
     this.service = service;
   }
+
+  /**
+   * Encontra academias próximas à localização do usuário.
+   *
+   * @param userLatitude Latitude da localização do usuário.
+   * @param userLongitude Longitude da localização do usuário.
+   * @return A lista de academias próximas.
+   * @throws InvalidCoordsException Se as coordenadas forem inválidas.
+   */
 
   @WithTransaction
   public Uni<List<Gym>> nearbyGyms(Double userLatitude, Double userLongitude) {

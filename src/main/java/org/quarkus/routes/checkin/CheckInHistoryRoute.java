@@ -9,6 +9,14 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.quarkus.services.checkin.CheckInHistoryService;
 import org.quarkus.services.user.TokenService;
 
+/**
+ * Rota para histórico de check-ins.
+ * <p>
+ * Esta classe define os endpoints para obter o histórico de check-ins de um usuário,
+ * incluindo a validação de token de usuário.
+ * </p>
+ */
+
 @Path("/checkins")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -19,6 +27,15 @@ public class CheckInHistoryRoute {
 
   @Inject
   TokenService jwt;
+
+  /**
+   * Obtém o histórico de check-ins de um usuário.
+   *
+   * @param headers Cabeçalhos HTTP.
+   * @param tokenCookie Cookie de autenticação.
+   * @param page Número da página para paginação.
+   * @return A resposta com o histórico de check-ins.
+   */
 
   @GET
   @Path("/history")

@@ -18,6 +18,14 @@ import static org.jboss.resteasy.reactive.RestResponse.Status.FORBIDDEN;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.UNAUTHORIZED;
 
+/**
+ * Rota para criação de check-in em academias.
+ * <p>
+ * Esta classe define os endpoints para realizar check-ins em academias,
+ * incluindo a validação de token de usuário e a validação de distância máxima.
+ * </p>
+ */
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -28,6 +36,16 @@ public class CheckInCreationRoute {
 
   @Inject
   TokenService jwt;
+
+  /**
+   * Cria um novo check-in em uma academia.
+   *
+   * @param gymId Identificador da academia.
+   * @param request Dados de validação do check-in.
+   * @param headers Cabeçalhos HTTP.
+   * @param cookie Cookie de autenticação.
+   * @return A resposta da criação do check-in.
+   */
 
   @POST
   @Path("/{gymId}/check-in")
@@ -67,6 +85,7 @@ public class CheckInCreationRoute {
           error -> Response.status(UNAUTHORIZED)
             .entity(error.getMessage()).build()
         );
-      });
+      }
+    );
   }
 }

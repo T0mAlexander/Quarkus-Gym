@@ -18,6 +18,14 @@ import org.slf4j.LoggerFactory;
 
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.*;
 
+/**
+ * Rota para registro de academias.
+ * <p>
+ * Esta classe define os endpoints para registrar novas academias,
+ * incluindo a validação de token de administrador e a verificação de privilégios.
+ * </p>
+ */
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -30,6 +38,15 @@ public class GymCreationRoute {
 
   @Inject
   TokenService jwt;
+
+  /**
+   * Registra uma nova academia.
+   *
+   * @param request Dados de validação do registro da academia.
+   * @param header Cabeçalhos HTTP.
+   * @param cookie Cookie de autenticação.
+   * @return A resposta do registro da academia.
+   */
 
   @POST
   @Path("/signup")

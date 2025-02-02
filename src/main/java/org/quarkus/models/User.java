@@ -9,32 +9,59 @@ import org.quarkus.utils.user.Role;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Representa um usuário do sistema.
+ * <p>
+ * Esta classe mapeia a entidade de usuário no banco de dados, incluindo informações
+ * sobre o nome, email, senha e papel do usuário.
+ * </p>
+ */
+
 @Entity
 @Table(name = "users")
 @Cacheable
 @SuppressWarnings("unused")
 public class User extends PanacheEntityBase {
+
+  /**
+   * Identificador único do usuário.
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  /**
+   * Nome do usuário.
+   */
   @Column
   @NotNull
   private String name;
 
+  /**
+   * Email do usuário.
+   */
   @Column
   @NotEmpty
   private String email;
 
+  /**
+   * Senha do usuário.
+   */
   @Column
   @NotNull
   private String password;
 
+  /**
+   * Papel do usuário no sistema.
+   */
   @Enumerated(EnumType.STRING)
   @Column
   @NotNull
   private Role role;
 
+  /**
+   * Lista de check-ins associados ao usuário.
+   */
   @OneToMany(mappedBy = "user")
   private List<CheckIn> checkIns;
 

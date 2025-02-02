@@ -21,6 +21,14 @@ import java.time.Duration;
 
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.*;
 
+/**
+ * Rota de login de usuários.
+ * <p>
+ * Esta classe define os endpoints para autenticação de usuários,
+ * incluindo a geração de tokens de sessão e a validação de credenciais.
+ * </p>
+ */
+
 @Path("/users")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -33,6 +41,14 @@ public class UserLoginRoute {
   @Inject
   TokenService JWT;
 
+  /**
+   * Autentica um usuário e gera um token de sessão.
+   *
+   * @param request Dados de validação do login do usuário.
+   * @param token Token de sessão existente (opcional).
+   * @return A resposta com o token de sessão gerado.
+   */
+
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -43,20 +59,20 @@ public class UserLoginRoute {
       .onItem().transformToUni(user ->
         JWT.generateToken(user).onItem()
           .transform(newToken -> {
-            log.info("Usuário \"{}\" logou-se na aplicação!", user.getName());
+              log.info("Usuário \"{}\" logou-se na aplicação!", user.getName());
 
-            NewCookie tokenCookie = new NewCookie
-              .Builder("token")
-              .value(newToken)
-              .path("/").maxAge((int) Duration.ofMinutes(15).toSeconds())
-              .secure(true)
-              .httpOnly(true)
-              .build();
+              NewCookie tokenCookie = new NewCookie
+                .Builder("token")
+                .value(newToken)
+                .path("/").maxAge((int) Duration.ofMinutes(15).toSeconds())
+                .secure(true)
+                .httpOnly(true)
+                .build();
 
-            return Response.status(OK)
-              .cookie(tokenCookie)
-              .entity("{\"token\": \"" + newToken + "\"}")
-              .build();
+              return Response.status(OK)
+                .cookie(tokenCookie)
+                .entity("{\"token\": \"" + newToken + "\"}")
+                .build();
             }
           )
       ).onFailure(NewSessionException.class)

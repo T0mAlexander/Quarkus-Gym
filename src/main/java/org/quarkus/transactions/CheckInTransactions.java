@@ -12,6 +12,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Transações de Check-In.
+ * <p>
+ * Esta classe define os métodos para gerenciar as transações de check-in,
+ * incluindo o histórico de check-ins do usuário, busca de check-ins anteriores
+ * e criação de novos check-ins.
+ * </p>
+ */
+
 @ApplicationScoped
 public class CheckInTransactions implements PanacheRepository<CheckIn>, CheckInRepository {
 

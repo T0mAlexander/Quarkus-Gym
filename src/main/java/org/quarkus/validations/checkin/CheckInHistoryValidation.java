@@ -7,7 +7,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
-@SuppressWarnings("unused")
+/**
+ * Histórico de Check-In.
+ * <p>
+ * Esta classe define os parâmetros de validação para o histórico de check-ins,
+ * incluindo o nome da academia, latitude, longitude, data do check-in e data da validação.
+ * </p>
+ */
+
 @Schema(name = "Histórico de Check-In")
 public record CheckInHistoryValidation(
   @NotNull

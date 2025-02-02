@@ -16,6 +16,14 @@ import static org.jboss.resteasy.reactive.RestResponse.Status.BAD_REQUEST;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.UNAUTHORIZED;
 
+/**
+ * Rota para validação de check-in em academias.
+ * <p>
+ * Esta classe define os endpoints para validar check-ins em academias,
+ * incluindo a validação de token de administrador e a verificação de privilégios.
+ * </p>
+ */
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -26,6 +34,15 @@ public class CheckInValidationRoute {
 
   @Inject
   TokenService jwt;
+
+  /**
+   * Valida um check-in em uma academia.
+   *
+   * @param checkInId Identificador do check-in.
+   * @param header Cabeçalhos HTTP.
+   * @param cookie Cookie de autenticação.
+   * @return A resposta da validação do check-in.
+   */
 
   @PATCH
   @Path("/validate/{checkInId}")
@@ -50,23 +67,24 @@ public class CheckInValidationRoute {
 
     return jwt.validateToken(authToken).onItem()
       .transformToUni(adminId -> {
-        if (adminId == null) {
-          return Uni.createFrom().item(Response.status(BAD_REQUEST).entity("O token é inválido ou expirou!").build());
-        }
-
-        return jwt.checkRole(authToken).onItem().transformToUni(role -> {
-          if (role != Role.ADMIN) {
-            return Uni.createFrom().item(Response.status(UNAUTHORIZED).entity("Este usuário não possui privilégios administrativos para validar check-ins!").build());
+          if (adminId == null) {
+            return Uni.createFrom().item(Response.status(BAD_REQUEST).entity("O token é inválido ou expirou!").build());
           }
 
-          return service.validateCheckIn(checkInId, authToken)
-            .onItem().transform(
-              checkIn -> Response.status(OK).entity("O check-in foi validado com sucesso!").build()
-            ).onFailure().recoverWithItem(
-              error -> Response.status(UNAUTHORIZED)
-                .entity(error.getMessage()).build()
-            );
-        });
+          return jwt.checkRole(authToken).onItem().transformToUni(role -> {
+            if (role != Role.ADMIN) {
+              return Uni.createFrom().item(Response.status(UNAUTHORIZED).entity("Este usuário não possui privilégios administrativos para validar check-ins!").build());
+            }
+
+            return service.validateCheckIn(checkInId, authToken)
+              .onItem().transform(
+                checkIn -> Response.status(OK).entity("O check-in foi validado com sucesso!").build()
+              ).onFailure().recoverWithItem(
+                error -> Response.status(UNAUTHORIZED)
+                  .entity(error.getMessage()).build()
+              );
+          }
+        );
       }
     );
   }

@@ -13,6 +13,14 @@ import org.quarkus.services.user.TokenService;
 
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 
+/**
+ * Rota de logout de usuários.
+ * <p>
+ * Esta classe define os endpoints para realizar o logout de usuários,
+ * incluindo a revogação do token de sessão e a remoção do cookie de autenticação.
+ * </p>
+ */
+
 @Path("/users")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -20,6 +28,14 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 public class UserLogoutRoute {
   @Inject
   TokenService jwt;
+
+  /**
+   * Realiza o logout de um usuário.
+   *
+   * @param header Cabeçalhos HTTP.
+   * @param cookie Cookie de autenticação.
+   * @return A resposta do logout.
+   */
 
   @POST
   @Path("/logout")

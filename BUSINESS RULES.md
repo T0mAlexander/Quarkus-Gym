@@ -28,5 +28,5 @@
 - [x] Lista de dados com 10 itens por página
 - [x] Identificação de usuários com JSON Web Token (JWT)
 - [x] Documentação do uso da API com Swagger UI e OpenAPI
-- [ ] Documentar o código, métodos e submétodos com Javadoc
+- [x] Documentar o código, métodos e submétodos com Javadoc
 - [ ] Implementar testes nativos do Quarkus

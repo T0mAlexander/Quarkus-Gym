@@ -12,6 +12,14 @@ import org.quarkus.utils.user.Role;
 
 import java.util.UUID;
 
+/**
+ * Serviço de registro de usuários.
+ * <p>
+ * Esta classe define os métodos para registrar novos usuários na aplicação,
+ * incluindo a verificação de existência de usuário e a criação de um novo usuário.
+ * </p>
+ */
+
 @ApplicationScoped
 public class UserRegisterService {
   private final UserTransactions service;
@@ -21,6 +29,16 @@ public class UserRegisterService {
     this.service = service;
   }
 
+  /**
+   * Cria um novo usuário.
+   *
+   * @param name Nome do usuário.
+   * @param email Email do usuário.
+   * @param password Senha do usuário.
+   * @param role Cargo do usuário.
+   * @return O usuário criado.
+   * @throws UserExistsException Se o usuário já estiver cadastrado.
+   */
   @WithTransaction
   public Uni<User> create(String name, String email, String password, Role role) {
     String passwordHash = BCrypt.withDefaults().hashToString(6, password.toCharArray());
@@ -30,16 +48,16 @@ public class UserRegisterService {
         new UserExistsException("Este usuário já está cadastrado!"))
       .onItem().ifNull()
       .switchTo(() -> {
-        UUID userId = UUID.randomUUID();
-        User newUser = new User(userId);
+          UUID userId = UUID.randomUUID();
+          User newUser = new User(userId);
 
-        newUser.setName(name);
-        newUser.setEmail(email);
-        newUser.setPassword(passwordHash);
-        newUser.setRole(role);
+          newUser.setName(name);
+          newUser.setEmail(email);
+          newUser.setPassword(passwordHash);
+          newUser.setRole(role);
 
-        return service.create(newUser);
-      }
-    );
+          return service.create(newUser);
+        }
+      );
   }
 }

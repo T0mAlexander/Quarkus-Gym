@@ -17,6 +17,14 @@ import java.util.stream.Collectors;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_ACCEPTABLE;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 
+/**
+ * Rota de busca global de academias.
+ * <p>
+ * Esta classe define os endpoints para buscar academias globalmente,
+ * permitindo a pesquisa por nome ou outros critérios.
+ * </p>
+ */
+
 @Path("/gyms")
 @RegisterRestClient
 @SuppressWarnings("unused")
@@ -24,6 +32,14 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.OK;
 public class GymSearchRoute {
   @Inject
   GymSearchService database;
+
+  /**
+   * Busca academias com base em uma consulta fornecida.
+   *
+   * @param query Termo de busca.
+   * @param page Número da página para paginação.
+   * @return A resposta com a lista de academias encontradas.
+   */
 
   @GET
   @Path("/search")

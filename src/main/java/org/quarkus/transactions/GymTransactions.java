@@ -12,8 +12,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Transações de academias.
+ * <p>
+ * Esta classe define os métodos para gerenciar as transações de academias,
+ * incluindo a busca por academias, busca por academias próximas e criação de novas academias.
+ * </p>
+ */
+
 @ApplicationScoped
 public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
+
   @Override
   public Uni<Gym> findByEmail(String email) {
     return find("email", email).firstResult();
@@ -35,14 +44,14 @@ public class GymTransactions implements PanacheRepository<Gym>, GymRepository {
 
     return listAll().onItem().transform(
       gyms -> gyms.stream()
-      .filter(gym -> {
-        double distance = VincentyAlgorithm.calculateDistance(
-          new Coordinates(latitude, longitude),
-          new Coordinates(gym.getLocation())
-        );
+        .filter(gym -> {
+          double distance = VincentyAlgorithm.calculateDistance(
+            new Coordinates(latitude, longitude),
+            new Coordinates(gym.getLocation())
+          );
 
-        return distance <= radiusInMetres;
-      }).collect(Collectors.toList()));
+          return distance <= radiusInMetres;
+        }).collect(Collectors.toList()));
   }
 
   @Override
