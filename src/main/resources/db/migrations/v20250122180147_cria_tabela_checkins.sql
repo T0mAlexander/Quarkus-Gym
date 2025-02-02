@@ -8,6 +8,7 @@ CREATE TABLE check_ins (
   gym_id UUID,
   user_id UUID,
   validation_date TIMESTAMP(6),
+  status VARCHAR(255) CHECK (status IN ('CREATED', 'VALIDATED', 'EXPIRED')),
   PRIMARY KEY (id)
 );
 
