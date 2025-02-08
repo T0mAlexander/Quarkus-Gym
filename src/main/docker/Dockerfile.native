@@ -17,6 +17,7 @@
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.10
 
+ENV TZ=America/Sao_Paulo
 WORKDIR /quarkus
 
 RUN chown 1001 /quarkus \
