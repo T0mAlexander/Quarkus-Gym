@@ -1,4 +1,15 @@
 services:
+  jenkins:
+    container_name: jenkins
+    build:
+      context: ./docker/jenkins
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/tom/Java/OpenJDK-21:/var/jenkins_home/tools/java-21
+    ports:
+      - 8000:8080
+    restart: always
+
   postgres:
     container_name: postgres
     image: postgis/postgis:17-3.5-alpine
@@ -9,6 +20,8 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: quarkus
     restart: always
+    labels:
+      logging: promtail
 
   redis:
     container_name: redis
@@ -16,3 +29,77 @@ services:
     ports:
       - 6379:6379
     restart: always
+    labels:
+      logging: promtail
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.1.0
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/prometheus/config.yml
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./docker/prometheus/config.yml:/prometheus/config.yml
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.5.0
+    ports:
+      - 3000:3000
+    environment:
+      GF_INSTALL_PLUGINS: redis-datasource,grafana-postgresql-datasource
+    volumes:
+      - ./docker/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - prometheus
+
+  otel:
+    container_name: open-telemetry
+    image: otel/opentelemetry-collector-contrib:0.118.0
+    volumes:
+      - ./docker/otel/config.yml:/otel/config.yml
+    command:
+      - --config=/otel/config.yml
+    labels:
+      logging: promtail
+    depends_on:
+      - tempo
+
+  tempo:
+    container_name: tempo
+    image: grafana/tempo:2.7.0
+    command: [ "-config.file=/etc/tempo/config.yml" ]
+    ports:
+      - 4317:4317
+    volumes:
+      - ./docker/tempo/config.yml:/etc/tempo/config.yml
+    depends_on:
+      - loki
+
+  loki:
+    container_name: loki
+    image: grafana/loki:3.3.2
+    ports:
+      - 3100:3100
+    volumes:
+      - ./docker/loki/config.yml:/loki/config.yml
+    command:
+      - --config.file=/loki/config.yml
+      - --config.expand-env=true
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:3.3.2
+    command:
+      - -config.file=/etc/promtail/config.yml
+      - -print-config-stderr=false
+      - -config.expand-env=true
+    ports:
+      - 3300:3300
+    volumes:
+      - ./docker/promtail/config.yml:/etc/promtail/config.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - loki
