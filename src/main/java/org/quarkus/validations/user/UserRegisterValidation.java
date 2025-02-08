@@ -1,5 +1,7 @@
 package org.quarkus.validations.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,6 +30,7 @@ public record UserRegisterValidation (
 
   @NotNull
   @Size(min = 6)
+  @JsonProperty(access = Access.WRITE_ONLY)
   @Schema(description = "Senha do novo usuário")
   String password,
 
