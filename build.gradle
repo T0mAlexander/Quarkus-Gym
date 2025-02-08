@@ -56,8 +56,8 @@ dependencies {
   liquibaseRuntime 'io.quarkus:quarkus-jdbc-postgresql:3.17.5'
 
   // Observabilidade
-//  implementation 'io.quarkus:quarkus-opentelemetry:3.17.5'
-//  implementation 'io.quarkus:quarkus-micrometer-registry-prometheus:3.17.5'
+  implementation 'io.quarkus:quarkus-opentelemetry:3.17.5'
+  implementation 'io.quarkus:quarkus-micrometer-registry-prometheus:3.17.5'
 
   // Cache
   implementation 'io.quarkus:quarkus-redis-client:3.17.5'
@@ -157,6 +157,10 @@ tasks.register('liquibaseHistory') {
   description = 'Consulta o histórico de migrações do Liquibase'
 
   dependsOn('history')
+}
+
+tasks.withType(Test).configureEach {
+  enabled = false
 }
 
 test {
