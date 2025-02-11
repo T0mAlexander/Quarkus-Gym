@@ -3,3 +3,10 @@
 !build/*-runner.jar
 !build/lib/*
 !build/quarkus-app/*/.idea/
+!src/main/java/*
+!src/main/resources/*
+!gradle.properties
+!gradle
+!gradlew
+!settings.gradle
+!build.gradle

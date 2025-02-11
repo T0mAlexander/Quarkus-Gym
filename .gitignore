@@ -2,8 +2,8 @@
 .gradle/
 build/
 
-# JWT
-*-privkey.pem
+# Docker
+docker/*/data
 
 # Eclipse
 .project
@@ -37,9 +37,11 @@ nb-configuration.xml
 
 # Local environment
 .env
+application.properties
 
 # Plugin directory
 /.quarkus/cli/plugins/
 
 # TLS Certificates
 .certs/
+*-privkey.pem
