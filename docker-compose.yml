@@ -5,7 +5,7 @@ services:
       context: ./docker/jenkins
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/tom/Java/OpenJDK-21:/var/jenkins_home/tools/java-21
+      - ./docker/jenkins/data:/var/jenkins_home
     ports:
       - 8000:8080
     restart: always
