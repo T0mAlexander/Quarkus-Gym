@@ -30,3 +30,4 @@
 - [x] Documentação do uso da API com Swagger UI e OpenAPI
 - [x] Documentar o código, métodos e submétodos com Javadoc
 - [ ] Implementar testes nativos do Quarkus
+- [ ] Implementar observabilidade com OpenTelemetry, Grafana, Prometheus e Loki
