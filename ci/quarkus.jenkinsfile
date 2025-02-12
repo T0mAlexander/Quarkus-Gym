@@ -99,7 +99,7 @@ pipeline {
             -Pdb.user=${DB_USER} \
             -Pdb.password=${DB_PASSWORD} \
             -Pdb.changelog="src/main/resources/db/changelog/liquibase.xml"
-          '''
+        '''
       }
     }
 
