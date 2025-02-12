@@ -1,0 +1,143 @@
+def buildStatus(buildResult) {
+  def buildTime = ""
+
+  if (currentBuild.duration < 60000) {
+    buildTime = "menos que 1 minuto ⏱️"
+  } else if (currentBuild.duration >= 60000 && currentBuild.duration < 120000) {
+    buildTime = "aproximadamente 1 minuto ⏱️"
+  } else {
+    def minutes = currentBuild.duration / 60000
+    buildTime = "${String.format('%d', minutes.toInteger())} minutos ⏱️"
+  }
+
+  discordSend(
+    title: "Quarkus Gym 🏋🏻‍♂️",
+    description: """
+      • **Build**: [N° ${env.BUILD_NUMBER}](${env.BUILD_URL}) 🛠️
+      • **Duração**: $buildTime
+      • **Ambiente**: Produção 🔨
+      • **Departamento**: Back-End 💾
+      • **URL**: http://localhost:8080 🔗
+      
+      ### Status: ${buildMsg(buildResult)}
+    """,
+    footer: "Esta mensagem foi gerada automaticamente pelo Jenkins",
+    thumbnail: "https://quarkus.io/assets/images/brand/quarkus_icon_1024px_default.png",
+    result: buildResult,
+    showChangeset: true,
+    webhookURL: "${DISCORD}"
+  )
+}
+
+def buildMsg(buildResult) {
+  switch (buildResult) {
+    case "SUCCESS":
+      return "Sucesso ✅"
+    case "FAILURE":
+      return "Falha ❌"
+    case "UNSTABLE":
+      return "Instável ⚠️"
+    case "ABORTED":
+      return "Cancelado 🏳️"
+    default:
+      return "Desconhecido"
+  }
+}
+
+pipeline {
+  agent any
+
+  environment {
+    DISCORD=credentials("DISCORD")
+    DB_URL=credentials("DB_URL_PROD")
+    DB_USER=credentials("DB_USER_PROD")
+    DB_PASS=credentials("DB_PASS_PROD")
+  }
+
+  options {
+    buildDiscarder logRotator(
+      numToKeepStr: "5"
+    )
+  }
+
+  stages {
+    stage("Baixando o repositório") {
+      steps {
+        git(
+          url: "https://github.com/T0mAlexander/Quarkus-Gym",
+          branch: "main"
+        )
+      }
+    }
+
+    stage("Carregando configurações de produção") {
+      steps {
+        configFileProvider(
+          [configFile(
+            fileId: "CONFIG_PROD",
+            targetLocation: "./src/main/resources/application.properties"
+          )
+          ]) {}
+      }
+    }
+
+    stage("Compilando o nativo executável do Quarkus") {
+      steps {
+        script {
+          docker.build(
+            "tom/quarkus-gym:prod", "."
+          )
+        }
+      }
+    }
+
+    stage("Fazendo migrações do banco com Liquibase") {
+      steps {
+        sh '''
+          liquibase update \
+            --url=${DB_URL} \
+            --username=${DB_USER} \
+            --password=${DB_PASS} \
+            --changeLogFile="src/main/resources/db/changelog/liquibase.xml"
+        '''
+      }
+    }
+
+    stage("Deploy do container do back-end") {
+      steps {
+        sh """
+          docker run --name=quarkus-gym -d \
+            --label logging=promtail \
+            --restart=always \
+            -p 8080:8080 \
+            -v ./src/main/resources/keys:/quarkus/keys \
+            --network quarkus-gym_default \
+            tom/quarkus-gym:prod
+        """
+      }
+    }
+
+  }
+
+  post {
+    success {
+      buildStatus("SUCCESS")
+    }
+
+    failure {
+      buildStatus("FAILURE")
+    }
+
+    unstable {
+      buildStatus("UNSTABLE")
+    }
+
+    aborted {
+      buildStatus("ABORTED")
+    }
+
+    notBuilt {
+      buildStatus("UNSTABLE")
+    }
+  }
+}
