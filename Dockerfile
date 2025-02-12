@@ -13,6 +13,8 @@ COPY --chown=quarkus:quarkus gradle.properties /code
 USER quarkus
 WORKDIR /code
 
+RUN chown -R quarkus:quarkus /code
+
 COPY ./src /code/src
 COPY --chown=quarkus:quarkus src/main/resources/application.properties /code/src/main/resources/application.properties
 COPY --chown=quarkus:quarkus src/main/resources /code/src/main/resources
