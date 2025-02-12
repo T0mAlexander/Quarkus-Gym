@@ -127,6 +127,8 @@ tasks.register('liquibaseMigrate') {
   def dbUser = project.findProperty('db.user') ?: { throw new IllegalArgumentException('Necessário informar o usuário do Postgres com "-Pdb.user=[usuário]"') }()
   def dbPassword = project.findProperty('db.password') ?: { throw new IllegalArgumentException('Necessário informar a senha do Postgres com "-Pdb.password=[senha]"') }()
 
+  def changelogFilePath = file(liquibaseProps.getProperty('quarkus.liquibase.changelog')).absolutePath
+
   liquibase {
     activities {
       //noinspection GroovyAssignabilityCheck
@@ -135,7 +137,7 @@ tasks.register('liquibaseMigrate') {
         username dbUser
         password dbPassword
         changelogFile liquibaseProps.getProperty('quarkus.liquibase.changelog')
-        logLevel liquibaseProps.getProperty('quarkus.liquibase.log.level')
+        logLevel changelogFilePath
       }
     }
   }
