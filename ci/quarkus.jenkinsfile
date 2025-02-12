@@ -94,12 +94,12 @@ pipeline {
     stage("Fazendo migrações do banco com Liquibase") {
       steps {
         sh '''
-          liquibase update \
-            --url=${DB_URL} \
-            --username=${DB_USER} \
-            --password=${DB_PASS} \
-            --changeLogFile="src/main/resources/db/changelog/liquibase.xml"
-        '''
+          ./gradlew liquibaseMigrate \
+            -Pdb.url=${DB_URL} \
+            -Pdb.user=${DB_USER} \
+            -Pdb.password=${DB_PASSWORD} \
+            -Pdb.changelog="src/main/resources/db/changelog/liquibase.xml"
+          '''
       }
     }
 
