@@ -14,6 +14,9 @@ USER quarkus
 WORKDIR /code
 
 COPY ./src /code/src
+COPY --chown=quarkus:quarkus src/main/resources/application.properties /code/src/main/resources/application.properties
+COPY --chown=quarkus:quarkus src/main/resources /code/src/main/resources
+
 RUN ./gradlew build -Dquarkus.native.enabled=true
 
 FROM quay.io/quarkus/quarkus-micro-image:3.0
