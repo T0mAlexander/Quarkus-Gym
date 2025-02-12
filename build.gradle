@@ -113,29 +113,32 @@ tasks.register('generateMigration') {
   }
 }
 
-liquibase {
+tasks.register('liquibaseMigrate') {
+  group = 'Database'
+  description = 'Realiza a migração do banco com Liquibase'
+  dependsOn('update')
+
   def liquibaseProps = new Properties()
   file("./src/main/resources/liquibase.properties").withInputStream {
     liquibaseProps.load(it)
   }
 
-  activities {
-    //noinspection GroovyAssignabilityCheck
-    main {
-      changelogFile './src/main/resources/db/changelog/liquibase.xml'
-      url liquibaseProps.getProperty('liquibase.command.url')
-      username liquibaseProps.getProperty('liquibase.command.user')
-      password liquibaseProps.getProperty('liquibase.command.password')
-      logLevel liquibaseProps.getProperty('liquibase.logLevel')
+  def dbUrl = project.findProperty('db.url') ?: { throw new IllegalArgumentException('Necessário informar o endereço do Postgres com "-Pdb.url=<endereço>"') }()
+  def dbUser = project.findProperty('db.user') ?: { throw new IllegalArgumentException('Necessário informar o usuário do Postgres com "-Pdb.user=[usuário]"') }()
+  def dbPassword = project.findProperty('db.password') ?: { throw new IllegalArgumentException('Necessário informar a senha do Postgres com "-Pdb.password=[senha]"') }()
+
+  liquibase {
+    activities {
+      //noinspection GroovyAssignabilityCheck
+      main {
+        url dbUrl
+        username dbUser
+        password dbPassword
+        changelogFile liquibaseProps.getProperty('quarkus.liquibase.changelog')
+        logLevel liquibaseProps.getProperty('quarkus.liquibase.log.level')
+      }
     }
   }
-}
-
-tasks.register('liquibaseMigrate') {
-  group = 'Database'
-  description = 'Realiza a migração do banco com Liquibase'
-
-  dependsOn('update')
 }
 
 tasks.register('liquibaseRollback') {
