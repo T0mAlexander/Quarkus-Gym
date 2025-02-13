@@ -1,6 +1,6 @@
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
 
-USER quarkus
+USER root
 
 RUN microdnf install -y findutils
 
