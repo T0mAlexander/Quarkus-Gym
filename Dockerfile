@@ -1,23 +1,20 @@
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
 
-USER root
+USER quarkus
 
 RUN microdnf install -y findutils
 
-COPY --chown=quarkus:quarkus gradlew /code/gradlew
-COPY --chown=quarkus:quarkus gradle /code/gradle
-COPY --chown=quarkus:quarkus build.gradle /code
-COPY --chown=quarkus:quarkus settings.gradle /code
-COPY --chown=quarkus:quarkus gradle.properties /code
+COPY gradlew /code/gradlew
+COPY gradle /code/gradle
+COPY build.gradle /code
+COPY settings.gradle /code
+COPY gradle.properties /code
 
-USER quarkus
 WORKDIR /code
 
-RUN chown -R quarkus:quarkus /code
-
 COPY ./src /code/src
-COPY --chown=quarkus:quarkus src/main/resources/application.properties /code/src/main/resources/application.properties
-COPY --chown=quarkus:quarkus src/main/resources /code/src/main/resources
+COPY src/main/resources/application.properties /code/src/main/resources/application.properties
+COPY src/main/resources /code/src/main/resources
 
 RUN ./gradlew build -Dquarkus.native.enabled=true
 
