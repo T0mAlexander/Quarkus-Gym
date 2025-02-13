@@ -51,7 +51,7 @@ pipeline {
     DISCORD=credentials("DISCORD")
     DB_URL=credentials("DB_URL_PROD")
     DB_USER=credentials("DB_USER_PROD")
-    DB_PASS=credentials("DB_PASS_PROD")
+    DB_PASSWORD=credentials("DB_PASS_PROD")
   }
 
   options {
@@ -85,7 +85,7 @@ pipeline {
       steps {
         script {
           docker.build(
-            "tom/quarkus-gym:prod", "."
+            "quarkus-gym:prod", "."
           )
         }
       }
@@ -97,7 +97,7 @@ pipeline {
          liquibase update \
             --url=${DB_URL} \
             --username=${DB_USER} \
-            --password=${DB_PASS} \
+            --password=${DB_PASSWORD} \
             --changeLogFile="src/main/resources/db/changelog/liquibase.xml"
         '''
       }
@@ -112,7 +112,7 @@ pipeline {
             -p 8080:8080 \
             -v ./src/main/resources/keys:/quarkus/keys \
             --network quarkus-gym_default \
-            tom/quarkus-gym:prod
+            quarkus-gym:prod
         """
       }
     }
