@@ -126,7 +126,6 @@ tasks.register('liquibaseMigrate') {
   def dbUrl = project.findProperty('db.url') ?: { throw new IllegalArgumentException('Necessário informar o endereço do Postgres com "-Pdb.url=[endereço]"') }()
   def dbUser = project.findProperty('db.user') ?: { throw new IllegalArgumentException('Necessário informar o usuário do Postgres com "-Pdb.user=[usuário]"') }()
   def dbPassword = project.findProperty('db.password') ?: { throw new IllegalArgumentException('Necessário informar a senha do Postgres com "-Pdb.password=[senha]"') }()
-  def liquibaseFile = project.findProperty('db.changelog') ?: { throw new IllegalArgumentException('Necessário informar o arquivo do Liquibase com "-Pdb.changelog=[caminho/relativo]"') }()
 
   liquibase {
     activities {
@@ -134,7 +133,7 @@ tasks.register('liquibaseMigrate') {
         url dbUrl
         username dbUser
         password dbPassword
-        changelogFile liquibaseFile
+        changelogFile "${projectDir}/src/main/resources/db/changelog/liquibase.xml"
       }
     }
   }
