@@ -8,28 +8,30 @@
 
 ```java
 @Entity
+@Cacheable
 @Table(name = "users")
-public class User extends PanacheEntity {
+public class User extends PanacheEntityBase {
+  
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+
   @Column
   @NotNull
   private String name;
-  
+
   @Column
   @NotEmpty
   private String email;
-  
+
   @Column
   @NotNull
   private String password;
-  
-  // Construtor padrão do Hibernate
-  public User () {}
 
-  public User(String name, String email, String password) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-  }
+  @Enumerated(EnumType.STRING)
+  @Column
+  @NotNull
+  private Role role;
   
   // Getters & Setters
 }
@@ -48,16 +50,25 @@ public interface UserRepository {
 ```
 
 ### 3. Gerencie a transação com o banco de dados
-- Na pasta `database`, implemente classes para gerenciar transações específicas.
+- Na pasta `transactions`, implemente classes para gerenciar transações específicas.
 
 ```java
-public class UserRegisterTransaction implements PanacheRepository<User>, UserRepository {
-  // Outros métodos de transações
-  
+// Importações
+
+@ApplicationScoped
+public class UserTransactions implements PanacheRepository<User>, UserRepository {
+
+  @Override
+  public Uni<User> findByEmail(String email) {
+    return find("email", email).firstResult();
+  }
+
   @Override
   public Uni<User> create(User user) {
-    return persist(user);
+    return getSession().chain(session -> session.merge(user));
   }
+  
+  // Outras transações
 }
 ```
 
@@ -75,35 +86,39 @@ public class UserExistsException extends RuntimeException {
 ```
 
 ### 5. Implemente a lógica de negócios
-- Crie uma classe de serviço na pasta `services`
+- Crie uma classe de serviço na pasta `services/user`
 - Utilize o repositório para acessar os dados
 
 ```java
+// Importações
+
 @ApplicationScoped
 public class UserRegisterService {
-    private final UserRegisterTransaction database;
+  private final UserTransactions service;
 
-    @Inject
-    public UserRegisterService(UsersRegisterTransaction database) {
-      this.database = database;
-    }
-
+  @Inject
+  public UserRegisterService(UserTransactions service) {
+    this.service = service;
+  }
+  
   @WithTransaction
-  public Uni<User> create(String name, String email, String password) {
+  public Uni<User> create(String name, String email, String password, Role role) {
     String passwordHash = BCrypt.withDefaults().hashToString(6, password.toCharArray());
 
-    return database.findByEmail(email)
+    return service.findByEmail(email)
       .onItem().ifNotNull().failWith(
         new UserExistsException("Este usuário já está cadastrado!"))
       .onItem().ifNull()
       .switchTo(() -> {
-          User newUser = new User();
+          UUID userId = UUID.randomUUID();
+          User newUser = new User(userId);
 
           newUser.setName(name);
           newUser.setEmail(email);
           newUser.setPassword(passwordHash);
+          newUser.setRole(role);
 
-          return database.create(newUser);
+          return service.create(newUser);
         }
       );
   }
@@ -116,43 +131,52 @@ public class UserRegisterService {
 
 ```java
 @ApplicationScoped
-public class UserRegisterFactory {
-  public UserRegisterService service(UsersRegisterTransaction transaction) {
-    return new UserRegisterService(transaction);
+@SuppressWarnings("unused")
+public class UserFactory {
+  public UserRegisterService registerService(UserTransactions registerUser) {
+    return new UserRegisterService(registerUser);
   }
+
+  // Outras instâncias de serviço
 }
 ```
 
 ### 7. Valide os dados
-- Na pasta `validations`, crie uma classe para validar os dados na interação da API. 
+- Na pasta `validations`, crie um record para validar os dados na interação da API. 
 
 > Neste arquivo, é onde se manipula requisição e resposta da API como no exemplo abaixo em que a senha cadastrada é oculta na resposta JSON. Equivalente ao famoso DTO
 
 ```java
-public class UserRegisterValidation {
-  @NotBlank
-  private String name;
+@Schema(name = "Registro de usuário")
+public record UserRegisterValidation (
+  @NotNull
+  @Schema(description = "Nome do novo usuário")
+  String name,
 
   @Email
-  @NotBlank
-  private String email;
+  @NotNull
+  @Schema(description = "E-mail do novo usuário")
+  String email,
 
-  @NotBlank
+  @NotNull
   @Size(min = 6)
   @JsonProperty(access = Access.WRITE_ONLY)
-  private String password;
+  @Schema(description = "Senha do novo usuário")
+  String password,
 
-  // Getters & Setters
-}
+  @NotNull
+  @Schema(description = "Cargo do novo usuário")
+  Role role
+) {}
 ```
 
 ### 8. Defina a rota da API
-- Na pasta `routes` (ou `controllers`), crie uma classe para definir as rotas e lidar com as requisições e respostas
+- Na pasta `routes`, crie uma classe para definir as rotas e lidar com as requisições e respostas
 
 ```java
 @Path("/users")
 @RegisterRestClient
-@SuppressWarnings("unused")
+@Tag(name = "Rota de registro de novos usuários")
 public class UserRegisterRoute {
   private static final Logger log = LoggerFactory.getLogger(UserRegisterRoute.class);
 
@@ -165,25 +189,28 @@ public class UserRegisterRoute {
   @Produces(MediaType.APPLICATION_JSON)
   public Uni<Response> createUser(@Valid UserRegisterValidation request) {
     return database.create(
-        request.getName(),
-        request.getEmail(),
-        request.getPassword()
+        request.name(),
+        request.email(),
+        request.password(),
+        request.role()
       ).onItem()
       .transform(newUser -> {
         log.info("Usuário \"{}\" registrou-se na aplicação!", newUser.getName());
 
-        UserRegisterValidation response = new UserRegisterValidation();
-
-        // Oculta ID e senha na resposta JSON
-        response.setName(newUser.getName());
-        response.setEmail(newUser.getEmail());
+        UserRegisterValidation response = new UserRegisterValidation(
+          newUser.getName(),
+          newUser.getEmail(),
+          newUser.getPassword(),
+          newUser.getRole()
+        );
 
         return Response.status(CREATED).entity(response).build();
       }).onFailure(UserExistsException.class)
       .recoverWithItem(
         error -> Response.status(CONFLICT)
-          .entity(error.getMessage())
-          .build());
+          .entity(
+            error.getMessage()
+          ).build());
   }
 }
 ```
