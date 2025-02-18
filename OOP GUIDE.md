@@ -174,6 +174,8 @@ public record UserRegisterValidation (
 - Na pasta `routes`, crie uma classe para definir as rotas e lidar com as requisições e respostas
 
 ```java
+// Importações
+
 @Path("/users")
 @RegisterRestClient
 @Tag(name = "Rota de registro de novos usuários")
