@@ -49,7 +49,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      GF_INSTALL_PLUGINS: redis-datasource,grafana-postgresql-datasource
+      GF_INSTALL_PLUGINS: redis-datasource
     volumes:
       - ./docker/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     depends_on:
