@@ -5,7 +5,7 @@ services:
       context: ./docker/jenkins
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/jenkins/data:/var/jenkins_home
+#      - ./docker/jenkins/data:/var/jenkins_home
     ports:
       - 8000:8080
     restart: always
